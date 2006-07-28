@@ -8,11 +8,4 @@ class TableTemplate:
         self.columnNames = columnNames
         self.columnTypes = columnTypes
 
-class TripleType(TableTemplate):
-	def __init__(self):
-		TableTemplate.__init__(self,
-			['subject', 'predicate', 'object', 'type'],
-			['String', 'String', 'String', 'UInt8'])
-
-tripleType = TripleType()
 

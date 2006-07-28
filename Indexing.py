@@ -50,7 +50,7 @@ class MaterialIndexer:
   def before_send(self, dataSource, data):
     recType, fields = data
     
-    if recType.name != 'NePython.PySTDF.V4.Prr' and self.closingInsertion:
+    if not isinstance(recType, V4.Prr) and self.closingInsertion:
       for head in self.currentInsertion.keys():
         self.currentInsertion[head] = 0
       self.closingInsertion = False

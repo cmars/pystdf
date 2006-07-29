@@ -3,8 +3,6 @@ from PySTDF import Pipeline
 from PySTDF.SummaryStatistics import SummaryStatistics
 from PySTDF.V4 import prr, pcr
 
-import pdb
-
 def filterNull(value):
     if value == 4294967295:
         return None

@@ -8,8 +8,6 @@ from PySTDF import V4
 
 from PySTDF.Pipeline import DataSource
 
-import pdb
-
 def appendFieldParser(fn, action):
   """Append a field parsing function to a record parsing function.
   This is used to build record parsing functions based on the record type specification."""

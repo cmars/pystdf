@@ -1,10 +1,6 @@
 import sys
-import new
-import inspect
 from PySTDF.Types import RecordType, stdfToLogicalType
 from PySTDF import TableTemplate
-
-import pdb
 
 class StdfRecordMeta(type):
   def __init__(cls, name, bases, dct):

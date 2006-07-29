@@ -3,8 +3,6 @@ from PySTDF.Pipeline import EventSource
 from PySTDF.SummaryStatistics import SummaryStatistics
 from PySTDF.V4 import prr, hbr, sbr
 
-import pdb
-
 def ifElse(cond, trueVal, falseVal):
   if cond:
     return trueVal

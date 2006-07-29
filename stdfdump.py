@@ -1,5 +1,17 @@
 
-import sys, re, gzip, bz2
+import sys, re
+
+try:
+    import gzip
+    have_gzip = True
+except ImportError:
+    have_gzip = False
+try:
+    import bz2
+    have_bz2 = True
+except ImportError:
+    have_bz2 = False
+
 from PySTDF.IO import Parser
 import PySTDF.V4
 
@@ -26,9 +38,15 @@ def stdfdump(fn):
     if filename is None:
         f = sys.stdin
     elif gzPattern.search(filename):
+        if not have_gzip:
+            print >>sys.stderr, "gzip is not supported on this system"
+            sys.exit(1)
         reopen_fn = lambda: gzip.open(filename, 'rb')
         f = reopen_fn()
     elif bz2Pattern.search(filename):
+        if not have_bz2:
+            print >>sys.stderr, "bz2 is not supported on this system"
+            sys.exit(1)
         reopen_fn = lambda: bz2.BZ2File(filename, 'rb')
         f = reopen_fn()
     else:

@@ -2,8 +2,6 @@
 from PySTDF.Pipeline import EventSource
 from PySTDF.V4 import ptr, mpr, ftr, tsr
 
-import pdb
-
 def filterNull(value):
   if value == 4294967295:
     return None

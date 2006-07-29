@@ -3,8 +3,6 @@ from PySTDF.SummaryStatistics import SummaryStatistics
 from PySTDF.V4 import ptr, mpr
 from PySTDF.Pipeline import EventSource
 
-import pdb
-
 class ParametricSummarizer(EventSource):
 	
 	def __init__(self):

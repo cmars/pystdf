@@ -48,8 +48,8 @@ class EventSource:
 
 class DataSource(EventSource):
   
-  def __init__(self):
-    EventSource.__init__(self, ['begin', 'send', 'complete', 'cancel'])
+  def __init__(self, add_events):
+    EventSource.__init__(self, ['begin', 'send', 'complete', 'cancel'] + add_events)
   
   def begin(self): pass
   
@@ -59,4 +59,3 @@ class DataSource(EventSource):
   
   def cancel(self): pass
   
-

@@ -47,6 +47,9 @@ class RecordHeader:
     self.len=0
     self.typ=0
     self.sub=0
+  
+  def __repr__(self):
+    return "<STDF Header, REC_TYP=%d REC_SUB=%d REC_LEN=%d>" % (self.typ, self.sub, self.len) 
 
 class RecordType(TableTemplate):
   def __init__(self):

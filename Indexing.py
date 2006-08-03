@@ -2,8 +2,12 @@
 from PySTDF.OoHelpers import abstract
 from PySTDF import V4
 
+class RecordIndexer:
+  def before_header(self, dataSource, header):
+    self.position = dataSource.inp.tell() - 4
+    self.header = header
+
 class SessionIndexer:
-  
   def getSessionID(self):
     return self.sessionid
   
@@ -13,11 +17,9 @@ class SessionIndexer:
   def createSessionID(self): abstract()
 
 class DemoSessionIndexer(SessionIndexer):
-  
   def createSessionID(self): return 0
 
 class RecordIndexer:
-  
   def getRecID(self):
     return self.recid
   
@@ -28,7 +30,6 @@ class RecordIndexer:
     self.recid += 1
 
 class MaterialIndexer:
-  
   def getCurrentWafer(self, head):
     return self.currentWafer.get(head, 0)
   

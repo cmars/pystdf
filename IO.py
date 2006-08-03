@@ -124,6 +124,8 @@ class Parser(DataSource):
     else:
       return '>'
   
+  def header(self, header): pass
+  
   def parse(self):
     self.begin()
     
@@ -138,6 +140,7 @@ class Parser(DataSource):
       try:
         while self.eof==0:
           header = self.readHeader()
+          self.header(header)
           if (self.recordMap.has_key((header.typ, header.sub))):
             recType = self.recordMap[(header.typ, header.sub)]
             recParser = self.recordParsers[(header.typ, header.sub)]
@@ -169,7 +172,7 @@ class Parser(DataSource):
     return fn
   
   def __init__(self, recTypes=V4.Records, inp=sys.stdin, reopen_fn=None, endian=None):
-    DataSource.__init__(self);
+    DataSource.__init__(self, ['header']);
     self.eof = 1
     self.recTypes = set(recTypes)
     self.inp = inp

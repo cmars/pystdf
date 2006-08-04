@@ -1,5 +1,5 @@
 
-class TableTemplate:
+class TableTemplate(object):
     def __init__(self, columnNames, columnTypes, name=None):
         if name is None:
             self.name = self.__module__ + '.' + self.__class__.__name__

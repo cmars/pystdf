@@ -2,6 +2,8 @@ import sys
 
 from PySTDF import TableTemplate
 
+import pdb
+
 logicalTypeMap = {
   "C1": "Char",
   "B1": "UInt8",
@@ -62,3 +64,29 @@ class EofException(Exception): pass
 class EndOfRecordException(Exception): pass
 
 class InitialSequenceException(Exception): pass
+
+class StdfRecordMeta(type):
+  """Generate the necessary plumbing for STDF record classes 
+  based on simple, static field defintions.
+  This enables a simple, mini-DSL (domain-specific language)
+  approach to defining STDF records.
+  I did this partly to learn what metaclasses are good for,
+  partly for fun, and partly because I wanted end users to be
+  able to easily define their own custom STDF record types.
+  """
+  def __init__(cls, name, bases, dct):
+    
+    # Map out field definitions
+    fieldMap = dct.get('fieldMap', [])
+    for i, fieldDef in enumerate(fieldMap):
+      setattr(cls, fieldDef[0], i)
+    setattr(cls, 'fieldFormats', dict(fieldMap))
+    setattr(cls, 'fieldNames', [field_name for field_name, field_type in fieldMap])
+    setattr(cls, 'fieldStdfTypes', [field_type for field_name, field_type in fieldMap])
+    
+    # Add initializer for the generated class
+    setattr(cls, '__init__', lambda _self: RecordType.__init__(_self))
+    
+    # Proceed with class generation
+    return super(StdfRecordMeta, cls).__init__(name, bases, dct)
+    

@@ -1,44 +1,32 @@
 import sys
-from PySTDF.Types import RecordType, stdfToLogicalType
+from PySTDF.Types import StdfRecordMeta, RecordType, stdfToLogicalType
 from PySTDF import TableTemplate
 
-class StdfRecordMeta(type):
-  def __init__(cls, name, bases, dct):
-    fieldMap = dct.get('fieldMap', [])
-    for i, fieldDef in enumerate(fieldMap):
-      setattr(cls, fieldDef[0], i)
-    setattr(cls, 'fieldFormats', dict(fieldMap))
-    setattr(cls, 'fieldNames', [name for name, type in fieldMap])
-    setattr(cls, 'fieldStdfTypes', [type for name, type in fieldMap])
-    super(StdfRecordMeta, cls).__init__(name, bases, dct)
+import pdb
 
-class Far(object, RecordType):
+class Far(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 0
   sub = 10
-  fieldMap = [
+  fieldMap = (
     ('CPU_TYPE', 'U1'),
     ('STDF_VER', 'U1')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
   
-class Atr(object, RecordType):
+class Atr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 0
   sub = 20
-  fieldMap = [
+  fieldMap = (
     ('MOD_TIM', 'U4'),
     ('CMD_LINE', 'Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Mir(object, RecordType):
+class Mir(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 10
-  fieldMap = [
+  fieldMap = (
     ('SETUP_T', 'U4'),
     ('START_T', 'U4'),
     ('STAT_NUM', 'U1'),
@@ -77,28 +65,24 @@ class Mir(object, RecordType):
     ('ROM_COD', 'Cn'),
     ('SERL_NUM', 'Cn'),
     ('SUPR_NAM', 'Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Mrr(object, RecordType):
+class Mrr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 20
-  fieldMap = [
+  fieldMap = (
     ('FINISH_T', 'U4'),
     ('DISP_COD', 'C1'),
     ('USR_DESC', 'Cn'),
     ('EXC_DESC', 'Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Pcr(object, RecordType):
+class Pcr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 30
-  fieldMap = [
+  fieldMap = (
     ('HEAD_NUM','U1'),
     ('SITE_NUM','U1'),
     ('PART_CNT','U4'),
@@ -106,45 +90,39 @@ class Pcr(object, RecordType):
     ('ABRT_CNT','U4'),
     ('GOOD_CNT','U4'),
     ('FUNC_CNT','U4')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Hbr(object, RecordType):
+class Hbr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 40
-  fieldMap = [
+  fieldMap = (
     ('HEAD_NUM','U1'),
     ('SITE_NUM','U1'),
     ('HBIN_NUM','U2'),
     ('HBIN_CNT','U4'),
     ('HBIN_PF','C1'),
     ('HBIN_NAM','Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Sbr(object, RecordType):
+class Sbr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 50
-  fieldMap = [
+  fieldMap = (
     ('HEAD_NUM','U1'),
     ('SITE_NUM','U1'),
     ('SBIN_NUM','U2'),
     ('SBIN_CNT','U4'),
     ('SBIN_PF','C1'),
     ('SBIN_NAM','Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Pmr(object, RecordType):
+class Pmr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 60
-  fieldMap = [
+  fieldMap = (
     ('PMR_INDX','U2'),
     ('CHAN_TYP','U2'),
     ('CHAN_NAM','Cn'),
@@ -152,28 +130,24 @@ class Pmr(object, RecordType):
     ('LOG_NAM','Cn'),
     ('HEAD_NUM','U1'),
     ('SITE_NUM','U1')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Pgr(object, RecordType):
+class Pgr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 62
-  fieldMap = [
+  fieldMap = (
     ('GRP_INDX','U2'),
     ('GRP_NAM','Cn'),
     ('INDX_CNT','U2'),
     ('PMR_INDX','k2U2')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Plr(object, RecordType):
+class Plr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 63
-  fieldMap = [
+  fieldMap = (
     ('GRP_CNT','U2'),
     ('GRP_INDX','k0U2'),
     ('GRP_MODE','k0U2'),
@@ -182,26 +156,22 @@ class Plr(object, RecordType):
     ('RTN_CHAR','k0Cn'),
     ('PGM_CHAL','k0Cn'),
     ('RTN_CHAL','k0Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Rdr(object, RecordType):
+class Rdr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 70
-  fieldMap = [
+  fieldMap = (
     ('NUM_BINS','U2'),
     ('RTST_BIN','k0U2')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Sdr(object, RecordType):
+class Sdr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 80
-  fieldMap = [
+  fieldMap = (
     ('HEAD_NUM','U1'),
     ('SITE_GRP','U1'),
     ('SITE_CNT','U1'),
@@ -222,28 +192,24 @@ class Sdr(object, RecordType):
     ('LASR_ID','Cn'),
     ('EXTR_TYP','Cn'),
     ('EXTR_ID','Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Wir(object, RecordType):
+class Wir(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 2
   sub = 10
-  fieldMap = [
+  fieldMap = (
     ('HEAD_NUM','U1'),
     ('SITE_GRP','U1'),
     ('START_T','U4'),
     ('WAFER_ID','Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Wrr(object, RecordType):
+class Wrr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 2
   sub = 20
-  fieldMap = [
+  fieldMap = (
     ('HEAD_NUM','U1'),
     ('SITE_GRP','U1'),
     ('FINISH_T','U4'),
@@ -258,15 +224,13 @@ class Wrr(object, RecordType):
     ('MASK_ID','Cn'),
     ('USR_DESC','Cn'),
     ('EXC_DESC','Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Wcr(object, RecordType):
+class Wcr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 2
   sub = 30
-  fieldMap = [
+  fieldMap = (
     ('WAFR_SIZ','R4'),
     ('DIE_HT','R4'),
     ('DIE_WID','R4'),
@@ -276,26 +240,22 @@ class Wcr(object, RecordType):
     ('CENTER_Y','I2'),
     ('POS_X','C1'),
     ('POS_Y','C1')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Pir(object, RecordType):
+class Pir(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 5
   sub = 10
-  fieldMap = [
+  fieldMap = (
     ('HEAD_NUM','U1'),
     ('SITE_NUM','U1')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Prr(object, RecordType):
+class Prr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 5
   sub = 20
-  fieldMap = [
+  fieldMap = (
     ('HEAD_NUM','U1'),
     ('SITE_NUM','U1'),
     ('PART_FLG','B1'),
@@ -308,15 +268,13 @@ class Prr(object, RecordType):
     ('PART_ID','Cn'),
     ('PART_TXT','Cn'),
     ('PART_FIX','Bn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Tsr(object, RecordType):
+class Tsr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 10
   sub = 30
-  fieldMap = [
+  fieldMap = (
     ('HEAD_NUM','U1'),
     ('SITE_NUM','U1'),
     ('TEST_TYP','C1'),
@@ -333,15 +291,13 @@ class Tsr(object, RecordType):
     ('TEST_MAX','R4'),
     ('TST_SUMS','R4'),
     ('TST_SQRS','R4')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Ptr(object, RecordType):
+class Ptr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 15
   sub = 10
-  fieldMap = [
+  fieldMap = (
     ('TEST_NUM','U4'),
     ('HEAD_NUM','U1'),
     ('SITE_NUM','U1'),
@@ -362,15 +318,13 @@ class Ptr(object, RecordType):
     ('C_HLMFMT','Cn'),
     ('LO_SPEC','R4'),
     ('HI_SPEC','R4')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Mpr(object, RecordType):
+class Mpr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 15
   sub = 15
-  fieldMap = [
+  fieldMap = (
     ('TEST_NUM','U4'),
     ('HEAD_NUM','U1'),
     ('SITE_NUM','U1'),
@@ -398,15 +352,13 @@ class Mpr(object, RecordType):
     ('C_HLMFMT','Cn'),
     ('LO_SPEC','R4'),
     ('HI_SPEC','R4')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Ftr(object, RecordType):
+class Ftr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 15
   sub = 20
-  fieldMap = [
+  fieldMap = (
     ('TEST_NUM','U4'),
     ('HEAD_NUM','U1'),
     ('SITE_NUM','U1'),
@@ -435,47 +387,37 @@ class Ftr(object, RecordType):
     ('RSLT_TXT','Cn'),
     ('PATG_NUM','U1'),
     ('SPIN_MAP','Dn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  )
 
-class Bps(object, RecordType):
+class Bps(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 20
   sub = 10
-  fieldMap = [
-    ('SEQ_NAME','Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  fieldMap = (
+    ('SEQ_NAME','Cn'),
+  )
 
-class Eps(object, RecordType):
+class Eps(RecordType):
   __metaclass__ = StdfRecordMeta
-  fieldMap = []
   typ = 20
   sub = 20
-  def __init__(self):
-    RecordType.__init__(self)
+  fieldMap = ()
 
-class Gdr(object, RecordType):
+class Gdr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 50
   sub = 10
-  fieldMap = [
-    ('GEN_DATA', 'Vn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  fieldMap = (
+    ('GEN_DATA', 'Vn'),
+  )
 
-class Dtr(object, RecordType):
+class Dtr(RecordType):
   __metaclass__ = StdfRecordMeta
   typ = 50
   sub = 30
-  fieldMap = [
-    ('TEXT_DAT', 'Cn')
-  ]
-  def __init__(self):
-    RecordType.__init__(self)
+  fieldMap = (
+    ('TEXT_DAT', 'Cn'),
+  )
 
 far = Far()
 atr = Atr()
@@ -503,7 +445,7 @@ eps = Eps()
 gdr = Gdr()
 dtr = Dtr()
 
-Records = [
+Records = (
   far,
   atr,
   mir,
@@ -529,4 +471,4 @@ Records = [
   eps,
   gdr,
   dtr
-]
+)

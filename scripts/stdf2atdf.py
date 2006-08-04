@@ -13,20 +13,8 @@ except ImportError:
     have_bz2 = False
 
 from PySTDF.IO import Parser
+from PySTDF.Writers import AtdfWriter
 import PySTDF.V4
-
-#def info(type, value, tb):
-#    import traceback, pdb
-#    # You are not in interactive mode; print the exception
-#    traceback.print_exception(type, value, tb)
-#    print
-#    # ... then star the debugger in post-mortem mode
-#    pdb.pm()
-#sys.excepthook = info
-
-class PrintRecords:
-    def after_send(self, dataSource, data):
-        print data[0].__class__.__name__ + ":" + str(data[1])
 
 gzPattern = re.compile('\.g?z', re.I)
 bz2Pattern = re.compile('\.bz2', re.I)
@@ -52,7 +40,7 @@ def process_file(fn):
     else:
         f = open(filename, 'rb')
     p=Parser(inp=f, reopen_fn=reopen_fn)
-    p.addSink(PrintRecords())
+    p.addSink(AtdfWriter())
     p.parse()
     f.close()
 

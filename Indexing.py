@@ -2,7 +2,7 @@
 from PySTDF.OoHelpers import abstract
 from PySTDF import V4
 
-class RecordIndexer:
+class StreamIndexer:
   def before_header(self, dataSource, header):
     self.position = dataSource.inp.tell() - 4
     self.header = header

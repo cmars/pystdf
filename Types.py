@@ -56,9 +56,15 @@ class RecordHeader:
 class RecordType(TableTemplate):
   def __init__(self):
     TableTemplate.__init__(self, 
-      [name for name,stdfType in self.fieldMap], 
-      [stdfToLogicalType(stdfTyp) for name,stdfTyp in self.fieldMap])
+      [name for name, stdfType in self.fieldMap], 
+      [stdfToLogicalType(stdfTyp) for name, stdfTyp in self.fieldMap])
   
+class UnknownRecord(TableTemplate):
+  def __init__(self, rec_typ, rec_sub):
+    TableTemplate.__init__(self, [], [], 'UnknownRecord')
+    self.rec_typ = rec_typ
+    self.rec_sub = rec_sub
+
 class EofException(Exception): pass
 
 class EndOfRecordException(Exception): pass

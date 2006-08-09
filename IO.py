@@ -109,7 +109,7 @@ class Parser(DataSource):
     hdr.sub = self.readFieldDirect("U1")
     return hdr
   
-  def _detectEndian(self):
+  def __detectEndian(self):
     self.eof = 0
     header = self.readHeader()
     if header.typ != 0 and header.sub != 10:
@@ -126,32 +126,39 @@ class Parser(DataSource):
   
   def header(self, header): pass
   
-  def parse(self):
+  def parse_records(self, count=0):
+    i = 0
+    self.eof = 0
+    fields = None
+    try:
+      while self.eof==0:
+        header = self.readHeader()
+        self.header(header)
+        if (self.recordMap.has_key((header.typ, header.sub))):
+          recType = self.recordMap[(header.typ, header.sub)]
+          recParser = self.recordParsers[(header.typ, header.sub)]
+          fields = recParser(self, header, [])
+          if len(fields) < len(recType.columnNames):
+            fields += [None] * (len(recType.columnNames) - len(fields))
+          self.send((recType, fields))
+        else:
+          self.inp.read(header.len)
+        if count:
+          i += 1
+          if i >= count: break
+    except EofException: pass
+  
+  def auto_detect_endian(self):
+    if self.inp.tell() == 0:
+      self.endian = '@'
+      self.endian = self.__detectEndian()
+  
+  def parse(self, count=0):
     self.begin()
     
     try:
-      saveEndian = self.endian
-      if self.endian == None:
-        self.endian = '@'
-        self.endian = self._detectEndian()
-      
-      self.eof = 0
-      fields = None
-      try:
-        while self.eof==0:
-          header = self.readHeader()
-          self.header(header)
-          if (self.recordMap.has_key((header.typ, header.sub))):
-            recType = self.recordMap[(header.typ, header.sub)]
-            recParser = self.recordParsers[(header.typ, header.sub)]
-            fields = recParser(self, header, [])
-            if len(fields) < len(recType.columnNames):
-              fields += [None] * (len(recType.columnNames) - len(fields))
-            self.send((recType, fields))
-          else:
-            self.inp.read(header.len)
-      except EofException: pass
-      self.endian = saveEndian
+      self.auto_detect_endian()
+      self.parse_records(count)
       self.complete()
     except Exception, exception:
       self.cancel()
@@ -171,7 +178,7 @@ class Parser(DataSource):
       fn = appendFieldParser(fn, self.getFieldParser(stdfType))
     return fn
   
-  def __init__(self, recTypes=V4.Records, inp=sys.stdin, reopen_fn=None, endian=None):
+  def __init__(self, recTypes=V4.records, inp=sys.stdin, reopen_fn=None, endian=None):
     DataSource.__init__(self, ['header']);
     self.eof = 1
     self.recTypes = set(recTypes)

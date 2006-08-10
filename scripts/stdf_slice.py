@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 from PySTDF.IO import Parser
 from PySTDF.Mapping import *

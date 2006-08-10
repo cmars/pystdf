@@ -1,6 +1,6 @@
 import sys
 
-from PySTDF import TableTemplate
+from pystdf import TableTemplate
 
 import pdb
 

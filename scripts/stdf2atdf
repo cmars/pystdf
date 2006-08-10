@@ -13,9 +13,9 @@ try:
 except ImportError:
     have_bz2 = False
 
-from PySTDF.IO import Parser
-from PySTDF.Writers import AtdfWriter
-import PySTDF.V4
+from pystdf.IO import Parser
+from pystdf.Writers import AtdfWriter
+import pystdf.V4
 
 gzPattern = re.compile('\.g?z', re.I)
 bz2Pattern = re.compile('\.bz2', re.I)

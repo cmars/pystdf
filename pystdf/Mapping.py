@@ -1,7 +1,7 @@
 
-from PySTDF.Types import *
-from PySTDF.Indexing import *
-from PySTDF import V4
+from pystdf.Types import *
+from pystdf.Indexing import *
+from pystdf import V4
 
 class StreamMapper(StreamIndexer):
     
@@ -19,9 +19,9 @@ class StreamMapper(StreamIndexer):
         self.types.append(rectype)
     
 if __name__ == '__main__':
-    from PySTDF.IO import Parser
-    from PySTDF.Writers import AtdfWriter
-    import PySTDF.V4
+    from pystdf.IO import Parser
+    from pystdf.Writers import AtdfWriter
+    import pystdf.V4
     
     filename, = sys.argv[1:]
     f = open(filename, 'rb')

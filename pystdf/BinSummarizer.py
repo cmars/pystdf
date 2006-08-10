@@ -1,7 +1,7 @@
 
-from PySTDF.Pipeline import EventSource
-from PySTDF.SummaryStatistics import SummaryStatistics
-from PySTDF.V4 import prr, hbr, sbr
+from pystdf.Pipeline import EventSource
+from pystdf.SummaryStatistics import SummaryStatistics
+from pystdf.V4 import prr, hbr, sbr
 
 def ifElse(cond, trueVal, falseVal):
   if cond:

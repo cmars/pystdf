@@ -1,7 +1,7 @@
 
-from PySTDF.SummaryStatistics import SummaryStatistics
-from PySTDF.V4 import ptr, mpr
-from PySTDF.Pipeline import EventSource
+from pystdf.SummaryStatistics import SummaryStatistics
+from pystdf.V4 import ptr, mpr
+from pystdf.Pipeline import EventSource
 
 class ParametricSummarizer(EventSource):
 	

@@ -1,6 +1,6 @@
 
-from PySTDF.Pipeline import EventSource
-from PySTDF.V4 import ptr, mpr, ftr, tsr
+from pystdf.Pipeline import EventSource
+from pystdf.V4 import ptr, mpr, ftr, tsr
 
 def filterNull(value):
   if value == 4294967295:

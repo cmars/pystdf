@@ -1,6 +1,6 @@
 import sys
-from PySTDF.Types import StdfRecordMeta, RecordType, stdfToLogicalType
-from PySTDF import TableTemplate
+from pystdf.Types import StdfRecordMeta, RecordType, stdfToLogicalType
+from pystdf import TableTemplate
 
 import pdb
 

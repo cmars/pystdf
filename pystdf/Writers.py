@@ -1,7 +1,7 @@
 
 import sys, os
 from time import strftime, localtime
-from PySTDF import V4
+from pystdf import V4
 
 class AtdfWriter:
     

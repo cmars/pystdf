@@ -1,6 +1,6 @@
 
-from PySTDF.OoHelpers import abstract
-from PySTDF import V4
+from pystdf.OoHelpers import abstract
+from pystdf import V4
 
 class StreamIndexer:
   def before_header(self, dataSource, header):

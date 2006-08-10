@@ -1,7 +1,7 @@
 
-from PySTDF import Pipeline
-from PySTDF.SummaryStatistics import SummaryStatistics
-from PySTDF.V4 import prr, pcr
+from pystdf import Pipeline
+from pystdf.SummaryStatistics import SummaryStatistics
+from pystdf.V4 import prr, pcr
 
 def filterNull(value):
     if value == 4294967295:

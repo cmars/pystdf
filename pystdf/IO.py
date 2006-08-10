@@ -3,10 +3,10 @@ import sys
 import struct
 import re
 
-from PySTDF.Types import *
-from PySTDF import V4
+from pystdf.Types import *
+from pystdf import V4
 
-from PySTDF.Pipeline import DataSource
+from pystdf.Pipeline import DataSource
 
 def appendFieldParser(fn, action):
   """Append a field parsing function to a record parsing function.

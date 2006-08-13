@@ -44,8 +44,9 @@ class HugeTable(gridlib.PyGridTableBase):
     def GetValue(self, row, col):
         return self.value_getters[col](self, row)
     
-    def SetValue(self, row, col, value): pass
-        
+    def SetValue(self, row, col, value): 
+        pass
+
 #--------------------------------------------------------------------------- 
 class HugeTableGrid(gridlib.Grid): 
     def __init__(self, parent, record_mapper, f): 
@@ -58,7 +59,8 @@ class HugeTableGrid(gridlib.Grid):
         self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnRightDown)   
     def OnRightDown(self, event): 
         print "hello" 
-        print self.GetSelectedRows() 
+        print self.GetSelectedRows()
+
 #--------------------------------------------------------------------------- 
 class TestFrame(wx.Frame): 
     def __init__(self, parent, filename):
@@ -73,7 +75,8 @@ class TestFrame(wx.Frame):
         
         wx.Frame.__init__(self, parent, -1, "Huge (virtual) Table Demo", size=(640,480)) 
         grid = HugeTableGrid(self, record_mapper, f) 
-        grid.SetReadOnly(5,5, True) 
+        grid.SetReadOnly(5,5, True)
+
 #--------------------------------------------------------------------------- 
 if __name__ == '__main__': 
     import sys 

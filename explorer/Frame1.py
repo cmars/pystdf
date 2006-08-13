@@ -65,6 +65,7 @@ class Frame1(wx.Frame):
               style=wx.DEFAULT_FRAME_STYLE, title=u'STDF Explorer')
         self._init_utils()
         self.SetClientSize(wx.Size(392, 465))
+        self.SetMenuBar(self.mainMenuBar)
 
         self.statusBar1 = wx.StatusBar(id=wxID_FRAME1STATUSBAR1,
               name='statusBar1', parent=self, style=0)

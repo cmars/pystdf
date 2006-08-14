@@ -1,6 +1,7 @@
 #Boa:Frame:Frame1
 
 import wx
+import wx.grid
 import wx.gizmos
 from wx.lib.anchors import LayoutAnchors
 
@@ -8,11 +9,14 @@ from pystdf.IO import Parser
 from pystdf.Mapping import *
 from pystdf.Writers import *
 
+from record_pos_table import RecordPositionTable
+
 def create(parent):
     return Frame1(parent)
 
-[wxID_FRAME1, wxID_FRAME1STATUSBAR1, wxID_FRAME1TREELISTCTRL1, 
-] = [wx.NewId() for _init_ctrls in range(3)]
+[wxID_FRAME1, wxID_FRAME1RECORDINFOGRID, wxID_FRAME1RECORDPOSGRID, 
+ wxID_FRAME1STATUSBAR1, 
+] = [wx.NewId() for _init_ctrls in range(4)]
 
 [wxID_FRAME1MENUFILECLOSE, wxID_FRAME1MENUFILEEXIT, wxID_FRAME1MENUFILEOPEN, 
 ] = [wx.NewId() for _init_coll_menuFile_Items in range(3)]
@@ -20,6 +24,12 @@ def create(parent):
 [wxID_FRAME1MENUHELPABOUT] = [wx.NewId() for _init_coll_menuHelp_Items in range(1)]
 
 class Frame1(wx.Frame):
+    def _init_coll_mainSizer_Items(self, parent):
+        # generated method, don't edit
+
+        parent.AddWindow(self.recordPosGrid, 1, border=0, flag=0)
+        parent.AddWindow(self.recordInfoGrid, 1, border=0, flag=0)
+
     def _init_coll_mainMenuBar_Menus(self, parent):
         # generated method, don't edit
 
@@ -58,6 +68,14 @@ class Frame1(wx.Frame):
 
         parent.SetStatusWidths([-1])
 
+    def _init_sizers(self):
+        # generated method, don't edit
+        self.mainSizer = wx.BoxSizer(orient=wx.HORIZONTAL)
+
+        self._init_coll_mainSizer_Items(self.mainSizer)
+
+        self.SetSizer(self.mainSizer)
+
     def _init_utils(self):
         # generated method, don't edit
         self.menuFile = wx.Menu(title='')
@@ -73,7 +91,7 @@ class Frame1(wx.Frame):
     def _init_ctrls(self, prnt):
         # generated method, don't edit
         wx.Frame.__init__(self, id=wxID_FRAME1, name='', parent=prnt,
-              pos=wx.Point(300, 141), size=wx.Size(615, 556),
+              pos=wx.Point(261, 71), size=wx.Size(615, 556),
               style=wx.DEFAULT_FRAME_STYLE, title=u'STDF Explorer')
         self._init_utils()
         self.SetClientSize(wx.Size(607, 527))
@@ -84,12 +102,16 @@ class Frame1(wx.Frame):
         self._init_coll_statusBar1_Fields(self.statusBar1)
         self.SetStatusBar(self.statusBar1)
 
-        self.treeListCtrl1 = wx.gizmos.TreeListCtrl(id=wxID_FRAME1TREELISTCTRL1,
-              name='treeListCtrl1', parent=self, pos=wx.Point(0, 0),
-              size=wx.Size(607, 487), style=wx.TR_HAS_BUTTONS)
-        self.treeListCtrl1.SetAutoLayout(False)
-        self.treeListCtrl1.SetConstraints(LayoutAnchors(self.treeListCtrl1,
-              True, True, False, False))
+        self.recordPosGrid = wx.grid.Grid(id=wxID_FRAME1RECORDPOSGRID,
+              name=u'recordPosGrid', parent=self, pos=wx.Point(0, 0),
+              size=wx.Size(303, 487), style=0)
+
+        self.recordInfoGrid = wx.grid.Grid(id=wxID_FRAME1RECORDINFOGRID,
+              name=u'recordInfoGrid', parent=self, pos=wx.Point(303, 0),
+              size=wx.Size(303, 100), style=0)
+        self.recordInfoGrid.SetColLabelTextOrientation(3)
+
+        self._init_sizers()
 
     def __init__(self, parent):
         self._init_ctrls(parent)
@@ -109,6 +131,8 @@ class Frame1(wx.Frame):
                 self.record_mapper = StreamMapper()
                 parser.addSink(self.record_mapper)
                 parser.parse()
+                
+                self.recordPosGrid.SetTable(RecordPositionTable(self.record_mapper))
                 
 #                self.stdf_stream.seek(0)
 #                self.parser = Parser(inp=self.stdf_stream)

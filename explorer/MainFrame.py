@@ -1,4 +1,4 @@
-#Boa:Frame:Frame1
+#Boa:Frame:MainFrame
 
 import wx
 import wx.grid
@@ -15,18 +15,19 @@ from record_view_listctrl import RecordViewListCtrl
 from record_keeper import RecordKeeper
 
 def create(parent):
-    return Frame1(parent)
+    return MainFrame(parent)
 
-[wxID_FRAME1, wxID_FRAME1RECORDPOSITIONLIST, wxID_FRAME1RECORDVIEWLIST, 
- wxID_FRAME1STATUSBAR1, 
+[wxID_MAINFRAME, wxID_MAINFRAMERECORDPOSITIONLIST, 
+ wxID_MAINFRAMERECORDVIEWLIST, wxID_MAINFRAMESTATUSBAR1, 
 ] = [wx.NewId() for _init_ctrls in range(4)]
 
-[wxID_FRAME1MENUFILECLOSE, wxID_FRAME1MENUFILEEXIT, wxID_FRAME1MENUFILEOPEN, 
+[wxID_MAINFRAMEMENUFILECLOSE, wxID_MAINFRAMEMENUFILEEXIT, 
+ wxID_MAINFRAMEMENUFILEOPEN, 
 ] = [wx.NewId() for _init_coll_menuFile_Items in range(3)]
 
-[wxID_FRAME1MENUHELPABOUT] = [wx.NewId() for _init_coll_menuHelp_Items in range(1)]
+[wxID_MAINFRAMEMENUHELPABOUT] = [wx.NewId() for _init_coll_menuHelp_Items in range(1)]
 
-class Frame1(wx.Frame):
+class MainFrame(wx.Frame):
     _custom_classes = {'wx.ListCtrl': ['RecordPositionListCtrl','RecordViewListCtrl']}
     
     def _init_coll_mainSizer_Items(self, parent):
@@ -44,26 +45,26 @@ class Frame1(wx.Frame):
     def _init_coll_menuHelp_Items(self, parent):
         # generated method, don't edit
 
-        parent.Append(help=u'', id=wxID_FRAME1MENUHELPABOUT,
+        parent.Append(help=u'', id=wxID_MAINFRAMEMENUHELPABOUT,
               kind=wx.ITEM_NORMAL, text=u'About')
         self.Bind(wx.EVT_MENU, self.OnMenuHelpAboutMenu,
-              id=wxID_FRAME1MENUHELPABOUT)
+              id=wxID_MAINFRAMEMENUHELPABOUT)
 
     def _init_coll_menuFile_Items(self, parent):
         # generated method, don't edit
 
-        parent.Append(help='', id=wxID_FRAME1MENUFILEOPEN, kind=wx.ITEM_NORMAL,
-              text=u'Open')
-        parent.Append(help='', id=wxID_FRAME1MENUFILECLOSE, kind=wx.ITEM_NORMAL,
-              text=u'Close')
-        parent.Append(help='', id=wxID_FRAME1MENUFILEEXIT, kind=wx.ITEM_NORMAL,
-              text=u'Exit')
+        parent.Append(help='', id=wxID_MAINFRAMEMENUFILEOPEN,
+              kind=wx.ITEM_NORMAL, text=u'Open')
+        parent.Append(help='', id=wxID_MAINFRAMEMENUFILECLOSE,
+              kind=wx.ITEM_NORMAL, text=u'Close')
+        parent.Append(help='', id=wxID_MAINFRAMEMENUFILEEXIT,
+              kind=wx.ITEM_NORMAL, text=u'Exit')
         self.Bind(wx.EVT_MENU, self.OnMenuFileOpenMenu,
-              id=wxID_FRAME1MENUFILEOPEN)
+              id=wxID_MAINFRAMEMENUFILEOPEN)
         self.Bind(wx.EVT_MENU, self.OnMenuFileCloseMenu,
-              id=wxID_FRAME1MENUFILECLOSE)
+              id=wxID_MAINFRAMEMENUFILECLOSE)
         self.Bind(wx.EVT_MENU, self.OnMenuFileExitMenu,
-              id=wxID_FRAME1MENUFILEEXIT)
+              id=wxID_MAINFRAMEMENUFILEEXIT)
 
     def _init_coll_recordViewList_Columns(self, parent):
         # generated method, don't edit
@@ -111,28 +112,28 @@ class Frame1(wx.Frame):
 
     def _init_ctrls(self, prnt):
         # generated method, don't edit
-        wx.Frame.__init__(self, id=wxID_FRAME1, name='', parent=prnt,
-              pos=wx.Point(304, 125), size=wx.Size(615, 556),
+        wx.Frame.__init__(self, id=wxID_MAINFRAME, name=u'MainFrame',
+              parent=prnt, pos=wx.Point(304, 125), size=wx.Size(615, 556),
               style=wx.DEFAULT_FRAME_STYLE, title=u'STDF Explorer')
         self._init_utils()
         self.SetClientSize(wx.Size(607, 527))
         self.SetMenuBar(self.mainMenuBar)
 
-        self.statusBar1 = wx.StatusBar(id=wxID_FRAME1STATUSBAR1,
+        self.statusBar1 = wx.StatusBar(id=wxID_MAINFRAMESTATUSBAR1,
               name='statusBar1', parent=self, style=0)
         self._init_coll_statusBar1_Fields(self.statusBar1)
         self.SetStatusBar(self.statusBar1)
 
-        self.recordPositionList = RecordPositionListCtrl(id=wxID_FRAME1RECORDPOSITIONLIST,
+        self.recordPositionList = RecordPositionListCtrl(id=wxID_MAINFRAMERECORDPOSITIONLIST,
               name=u'recordPositionList', parent=self, pos=wx.Point(0, 0),
               size=wx.Size(202, 487),
               style=wx.LC_REPORT | wx.LC_VIRTUAL | wx.LC_HRULES | wx.LC_VRULES)
         self._init_coll_recordPositionList_Columns(self.recordPositionList)
         self.recordPositionList.Bind(wx.EVT_LIST_ITEM_SELECTED,
               self.OnRecordPositionListListItemSelected,
-              id=wxID_FRAME1RECORDPOSITIONLIST)
+              id=wxID_MAINFRAMERECORDPOSITIONLIST)
 
-        self.recordViewList = RecordViewListCtrl(id=wxID_FRAME1RECORDVIEWLIST,
+        self.recordViewList = RecordViewListCtrl(id=wxID_MAINFRAMERECORDVIEWLIST,
               name=u'recordViewList', parent=self, pos=wx.Point(202, 0),
               size=wx.Size(404, 487),
               style=wx.LC_REPORT | wx.LC_VIRTUAL | wx.LC_HRULES | wx.LC_VRULES)

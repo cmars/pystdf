@@ -14,11 +14,48 @@ from record_pos_listctrl import RecordPositionListCtrl
 from record_view_listctrl import RecordViewListCtrl
 from record_keeper import RecordKeeper
 
+from threading import *
+
+# Define notification event for thread completion
+EVT_MAPPED_ID = wx.NewId()
+
+def EVT_MAPPED(win, func):
+    """Define Mapped Event."""
+    win.Connect(-1, -1, EVT_MAPPED_ID, func)
+
+class MappedEvent(wx.PyEvent):
+    def __init__(self):
+        wx.PyEvent.__init__(self)
+        self.SetEventType(EVT_MAPPED_ID)
+
+class ProgressUpdater:
+    def __init__(self, notify_window):
+        self.notify_window = notify_window
+        self.count = 0
+    
+    def before_send(self, dataSource, data):
+        self.count += 1
+        if self.count % 1000 == 0:
+            self.notify_window.statusBar.SetStatusText(str(dataSource.inp.tell()))
+    
+class MapperThread(Thread):
+    def __init__(self, notify_window, parser):
+        Thread.__init__(self)
+        self._notify_window = notify_window
+        self.parser = parser
+        progress_updater = ProgressUpdater(notify_window)
+        self.parser.addSink(progress_updater)
+        self.start()
+    
+    def run(self):
+        self.parser.parse()
+        wx.PostEvent(self._notify_window, MappedEvent())
+
 def create(parent):
     return MainFrame(parent)
 
 [wxID_MAINFRAME, wxID_MAINFRAMERECORDPOSITIONLIST, 
- wxID_MAINFRAMERECORDVIEWLIST, wxID_MAINFRAMESTATUSBAR1, 
+ wxID_MAINFRAMERECORDVIEWLIST, wxID_MAINFRAMESTATUSBAR, 
 ] = [wx.NewId() for _init_ctrls in range(4)]
 
 [wxID_MAINFRAMEMENUFILECLOSE, wxID_MAINFRAMEMENUFILEEXIT, 
@@ -82,7 +119,7 @@ class MainFrame(wx.Frame):
         parent.InsertColumn(col=1, format=wx.LIST_FORMAT_LEFT,
               heading=u'Record Type', width=-1)
 
-    def _init_coll_statusBar1_Fields(self, parent):
+    def _init_coll_statusBar_Fields(self, parent):
         # generated method, don't edit
         parent.SetFieldsCount(1)
 
@@ -119,10 +156,10 @@ class MainFrame(wx.Frame):
         self.SetClientSize(wx.Size(607, 527))
         self.SetMenuBar(self.mainMenuBar)
 
-        self.statusBar1 = wx.StatusBar(id=wxID_MAINFRAMESTATUSBAR1,
-              name='statusBar1', parent=self, style=0)
-        self._init_coll_statusBar1_Fields(self.statusBar1)
-        self.SetStatusBar(self.statusBar1)
+        self.statusBar = wx.StatusBar(id=wxID_MAINFRAMESTATUSBAR,
+              name=u'statusBar', parent=self, style=0)
+        self._init_coll_statusBar_Fields(self.statusBar)
+        self.SetStatusBar(self.statusBar)
 
         self.recordPositionList = RecordPositionListCtrl(id=wxID_MAINFRAMERECORDPOSITIONLIST,
               name=u'recordPositionList', parent=self, pos=wx.Point(0, 0),
@@ -146,7 +183,8 @@ class MainFrame(wx.Frame):
     def __init__(self, parent):
         self._init_ctrls(parent)
         self.stdf_stream = None
-    
+        EVT_MAPPED(self, self.OnMapped)
+        
     def OnMenuHelpAboutMenu(self, event):
         event.Skip()
     
@@ -160,19 +198,23 @@ class MainFrame(wx.Frame):
                 parser = Parser(inp=self.stdf_stream)
                 self.record_mapper = StreamMapper()
                 parser.addSink(self.record_mapper)
-                parser.parse()
                 
-                self.recordPositionList.record_mapper = self.record_mapper
-                
-                self.stdf_stream.seek(0)
-                self.parser = Parser(inp=self.stdf_stream)
-                self.record_keeper = RecordKeeper()
-                self.parser.addSink(self.record_keeper)
-                self.parser.parse(1)
-            
+                # Parse the file in a separate thread
+                self.mapper = MapperThread(self, parser)
+        
         finally:
             dlg.Destroy()
     
+    def OnMapped(self, event):
+        self.recordPositionList.record_mapper = self.record_mapper
+        
+        self.stdf_stream.seek(0)
+        self.parser = Parser(inp=self.stdf_stream)
+        self.record_keeper = RecordKeeper()
+        self.parser.addSink(self.record_keeper)
+        self.parser.parse(1)
+        self.mapper = None
+        
     def OnMenuFileCloseMenu(self, event):
         self.recordPositionList.record_mapper = None
         del self.stdf_stream
@@ -189,4 +231,4 @@ class MainFrame(wx.Frame):
             self.parser.parse(1)
             print self.record_keeper.record_type, self.record_keeper.record_data
             self.recordViewList.record = self.record_keeper.record_type, self.record_keeper.record_data 
-    
+        

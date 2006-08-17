@@ -14,6 +14,7 @@ class RecordViewListCtrl(wx.ListCtrl):
         else:
             self.__record_type, self.__record_data = value
             self.SetItemCount(len(self.__record_type.fieldNames))
+            self.RefreshItems(0, len(self.__record_type.fieldNames)-1)
     record = property(get_record, set_record)
     
     def OnGetItemText(self, item, col):

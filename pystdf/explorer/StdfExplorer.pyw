@@ -3,9 +3,9 @@
 
 import wx
 
-import MainFrame
+from pystdf.explorer import MainFrame
 
-modules ={'MainFrame': [1, 'Main frame of Application', u'MainFrame.py']}
+modules ={'pystdf.explorer.MainFrame': [1, 'Main frame of Application', u'MainFrame.py']}
 
 class BoaApp(wx.App):
     def OnInit(self):

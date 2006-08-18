@@ -24,32 +24,46 @@ def EVT_MAPPED(win, func):
     win.Connect(-1, -1, EVT_MAPPED_ID, func)
 
 class MappedEvent(wx.PyEvent):
-    def __init__(self):
+    def __init__(self, cancelled=False):
         wx.PyEvent.__init__(self)
         self.SetEventType(EVT_MAPPED_ID)
+        self.cancelled = cancelled
 
 class ProgressUpdater:
     def __init__(self, notify_window):
         self.notify_window = notify_window
         self.count = 0
+        self.cancelled = False
     
     def before_send(self, dataSource, data):
+        if self.cancelled:
+            raise MapperCancelled
         self.count += 1
         if self.count % 1000 == 0:
-            self.notify_window.statusBar.SetStatusText(str(dataSource.inp.tell()))
+            self.notify_window.statusBar.SetStatusText('Mapped %d bytes' % (
+                dataSource.inp.tell()))
+            self.notify_window.recordPositionList.SetItemCount(self.count)
     
+class MapperCancelled(Exception): pass
+
 class MapperThread(Thread):
     def __init__(self, notify_window, parser):
         Thread.__init__(self)
         self._notify_window = notify_window
         self.parser = parser
-        progress_updater = ProgressUpdater(notify_window)
-        self.parser.addSink(progress_updater)
+        self.progress_updater = ProgressUpdater(notify_window)
+        self.parser.addSink(self.progress_updater)
         self.start()
     
+    def cancel(self):
+        self.progress_updater.cancelled = True
+    
     def run(self):
-        self.parser.parse()
-        wx.PostEvent(self._notify_window, MappedEvent())
+        try:
+            self.parser.parse()
+            wx.PostEvent(self._notify_window, MappedEvent())
+        except:
+            wx.PostEvent(self._notify_window, MappedEvent(cancelled=True))
 
 def create(parent):
     return MainFrame(parent)
@@ -155,6 +169,8 @@ class MainFrame(wx.Frame):
         self._init_utils()
         self.SetClientSize(wx.Size(607, 527))
         self.SetMenuBar(self.mainMenuBar)
+        self.SetExtraStyle(0)
+        self.SetStatusBarPane(0)
 
         self.statusBar = wx.StatusBar(id=wxID_MAINFRAMESTATUSBAR,
               name=u'statusBar', parent=self, style=0)
@@ -179,10 +195,10 @@ class MainFrame(wx.Frame):
         self._init_coll_recordViewList_Columns(self.recordViewList)
 
         self._init_sizers()
-
+        
     def __init__(self, parent):
         self._init_ctrls(parent)
-        self.stdf_stream = None
+        self.view_stream = None
         EVT_MAPPED(self, self.OnMapped)
         
     def OnMenuHelpAboutMenu(self, event):
@@ -193,11 +209,20 @@ class MainFrame(wx.Frame):
         try:
             if dlg.ShowModal() == wx.ID_OK:
                 filename = dlg.GetPath()
-                self.stdf_stream = open(filename, 'rb')
                 
-                parser = Parser(inp=self.stdf_stream)
+                # Set up the mapping parser
+                self.map_stream = open(filename, 'rb')
+                parser = Parser(inp=self.map_stream)
                 self.record_mapper = StreamMapper()
                 parser.addSink(self.record_mapper)
+                self.recordPositionList.record_mapper = self.record_mapper
+                
+                # Set up the viewing parser
+                self.view_stream = open(filename, 'rb')
+                self.view_parser = Parser(inp=self.view_stream)
+                self.record_keeper = RecordKeeper()
+                self.view_parser.addSink(self.record_keeper)
+                self.view_parser.parse(1)
                 
                 # Parse the file in a separate thread
                 self.mapper = MapperThread(self, parser)
@@ -206,29 +231,41 @@ class MainFrame(wx.Frame):
             dlg.Destroy()
     
     def OnMapped(self, event):
-        self.recordPositionList.record_mapper = self.record_mapper
+        if event.cancelled:
+            self.statusBar.SetStatusText('%s... Cancelled!' % (
+                self.statusBar.GetStatusText()))
+        else:
+            self.recordPositionList.SetItemCount(
+                len(self.record_mapper.indexes))
+            self.statusBar.SetStatusText('%s... Done' % (
+                self.statusBar.GetStatusText()))
         
-        self.stdf_stream.seek(0)
-        self.parser = Parser(inp=self.stdf_stream)
-        self.record_keeper = RecordKeeper()
-        self.parser.addSink(self.record_keeper)
-        self.parser.parse(1)
+        if self.map_stream is not None:
+            self.map_stream.close()
+            self.map_stream = None
         self.mapper = None
         
     def OnMenuFileCloseMenu(self, event):
         self.recordPositionList.record_mapper = None
-        del self.stdf_stream
-        self.stdf_stream = None
-        self.parser = None
+        self.view_stream.close()
+        self.view_stream = None
+        self.view_parser = None
         self.record_mapper = None
+        
+        self.recordPositionList.SetItemCount(0)
+        self.recordPositionList.Refresh()
+        self.recordViewList.SetItemCount(0)
+        self.recordViewList.Refresh()
+        
+        if self.mapper:
+            self.mapper.cancel()
     
     def OnMenuFileExitMenu(self, event):
         self.Close()
     
     def OnRecordPositionListListItemSelected(self, event):
         if self.record_mapper:
-            self.stdf_stream.seek(self.record_mapper.indexes[event.GetIndex()])
-            self.parser.parse(1)
-            print self.record_keeper.record_type, self.record_keeper.record_data
+            self.view_stream.seek(self.record_mapper.indexes[event.GetIndex()])
+            self.view_parser.parse(1)
             self.recordViewList.record = self.record_keeper.record_type, self.record_keeper.record_data 
         

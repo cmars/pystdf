@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
+import py2exe
 
 setup(name='pystdf',
     version='1.0.0',
@@ -25,7 +26,7 @@ PySTDF is released under a GPL license. Applications developed with PySTDF can o
     author='Casey Marshall',
     author_email='casey.marshall@gmail.com',
     url='http://code.google.com/p/pystdf/',
-    packages=['pystdf'],
+    packages=['pystdf','pystdf.explorer'],
     scripts=['scripts/stdf_slice', 'scripts/rec_index', 'scripts/stdf2atdf'],
     classifiers=[
       'Development Status :: 4 - Beta',
@@ -39,5 +40,15 @@ PySTDF is released under a GPL license. Applications developed with PySTDF can o
       'Topic :: Utilities',
       'Topic :: Software Development :: Libraries :: Python Modules',
       'Topic :: Software Development :: Pre-processors',
-      ],    
+      ],
+    windows=['pystdf/explorer/StdfExplorer.pyw',],
+    options = {
+        "py2exe": {
+            "compressed": 1,
+            "optimize": 2,
+            "ascii": 1,
+            "bundle_files": 1,
+            "packages": ['pystdf', 'pystdf.explorer'],
+        }
+    },
 )

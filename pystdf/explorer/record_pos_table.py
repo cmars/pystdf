@@ -7,7 +7,8 @@ class RecordPositionTable(gridlib.PyGridTableBase):
         gridlib.PyGridTableBase.__init__(self) 
         self.record_mapper = record_mapper
         
-    def GetNumberRows(self): 
+    def GetNumberRows(self):
+        print 'GetNumberRows: %d' % (len(self.record_mapper.indexes))
         return len(self.record_mapper.indexes)
     
     def GetNumberCols(self): 

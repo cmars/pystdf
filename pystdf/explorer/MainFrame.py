@@ -15,6 +15,7 @@ from record_view_listctrl import RecordViewListCtrl
 from record_keeper import RecordKeeper
 
 from threading import *
+from pystdf.logexcept import exc_string
 
 # Define notification event for thread completion
 EVT_MAPPED_ID = wx.NewId()
@@ -62,7 +63,8 @@ class MapperThread(Thread):
         try:
             self.parser.parse()
             wx.PostEvent(self._notify_window, MappedEvent())
-        except:
+        except Exception, what:
+            print >>sys.stderr, exc_string()
             wx.PostEvent(self._notify_window, MappedEvent(cancelled=True))
 
 def create(parent):
@@ -132,6 +134,12 @@ class MainFrame(wx.Frame):
               heading=u'File Offset', width=-1)
         parent.InsertColumn(col=1, format=wx.LIST_FORMAT_LEFT,
               heading=u'Record Type', width=-1)
+        parent.InsertColumn(col=2, format=wx.LIST_FORMAT_LEFT,
+              heading=u'Wafer', width=-1)
+        parent.InsertColumn(col=3, format=wx.LIST_FORMAT_LEFT,
+              heading=u'Insertion', width=-1)
+        parent.InsertColumn(col=4, format=wx.LIST_FORMAT_LEFT,
+              heading=u'Part', width=-1)
 
     def _init_coll_statusBar_Fields(self, parent):
         # generated method, don't edit
@@ -215,7 +223,10 @@ class MainFrame(wx.Frame):
                 parser = Parser(inp=self.map_stream)
                 self.record_mapper = StreamMapper()
                 parser.addSink(self.record_mapper)
+                material_mapper = MaterialMapper()
+                parser.addSink(material_mapper)
                 self.recordPositionList.record_mapper = self.record_mapper
+                self.recordPositionList.material_mapper = material_mapper
                 
                 # Set up the viewing parser
                 self.view_stream = open(filename, 'rb')
@@ -247,6 +258,7 @@ class MainFrame(wx.Frame):
         
     def OnMenuFileCloseMenu(self, event):
         self.recordPositionList.record_mapper = None
+        self.recordPositionList.material_mapper = None
         self.view_stream.close()
         self.view_stream = None
         self.view_parser = None

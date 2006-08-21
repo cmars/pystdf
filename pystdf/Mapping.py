@@ -18,6 +18,33 @@ class StreamMapper(StreamIndexer):
         rectype = self.__rec_map.get(key, UnknownRecord(*key))
         self.types.append(rectype)
     
+class MaterialMapper(MaterialIndexer):
+    indexable_types = set([V4.wir, V4.wrr, V4.pir, V4.prr, V4.ptr, V4.mpr, V4.ftr])
+    per_part_types = set([V4.pir, V4.prr, V4.ptr, V4.mpr, V4.ftr])
+    
+    def before_begin(self, dataSource):
+        MaterialIndexer.before_begin(self, dataSource)
+        self.waferid = []
+        self.insertionid = []
+        self.partid = []
+    
+    def before_send(self, dataSource, data):
+        MaterialIndexer.before_send(self, dataSource, data)
+        rectype, rec = data
+        if rectype in self.indexable_types:
+            head = rec[rectype.HEAD_NUM]
+            self.waferid.append(self.getCurrentWafer(head))
+            self.insertionid.append(self.getCurrentInsertion(head))
+            if rectype in self.per_part_types:
+                site = rec[rectype.SITE_NUM]
+                self.partid.append(self.getCurrentPart(head, site))
+            else:
+                self.partid.append(None)
+        else:
+            self.waferid.append(None)
+            self.insertionid.append(None)
+            self.partid.append(None)
+    
 if __name__ == '__main__':
     from pystdf.IO import Parser
     from pystdf.Writers import AtdfWriter

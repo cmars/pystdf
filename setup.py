@@ -84,7 +84,7 @@ stdfexplorer_wx = Target(
     dest_base = "StdfExplorer")
 
 setup(name='pystdf',
-    version='1.0.0',
+    version='1.2.0',
     description="Python module for working with STDF files",
     long_description="""
 PySTDF is a Python module that makes it easy to work with STDF (Teradyne's Standard Test Data Format). STDF is a commonly used file format in semiconductor test -- automated test equipment (ATE) from such vendors as Teradyne, Verigy, LTX, Credence, and others support this format.

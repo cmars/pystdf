@@ -1,0 +1,4 @@
+
+StdfExplorer is a simple STDF viewer GUI viewer 
+written in WxPython.  To run it, you'll need to install 
+WxPython 2.6.1.0 or greater.

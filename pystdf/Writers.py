@@ -21,6 +21,14 @@ import sys, os
 from time import strftime, localtime
 from pystdf import V4
 
+import pdb
+
+def format_by_type(value, field_type):
+    if field_type in ('B1', 'N1'):
+        return '%02X' % (value)
+    else:
+        return str(value)
+
 class AtdfWriter:
     
     @staticmethod
@@ -30,11 +38,11 @@ class AtdfWriter:
             return ""
         elif rectype is V4.gdr:
             return '|'.join([str(v) for v in value])
-        elif field_type[0] == 'k':
+        elif field_type[0] == 'k': # An Array of some other type
             return ','.join([format_by_type(v, field_type[2:]) for v in value])
         elif rectype is V4.mir or rectype is V4.mrr:
             field_name = rectype.fieldNames[field_index]
-            if field_name.endswith('_T'):
+            if field_name.endswith('_T'): # A Date-Time in an MIR/MRR
                 return strftime('%H:%M:%S %d-%b-%Y', localtime(value))
             else:
                 return str(value)

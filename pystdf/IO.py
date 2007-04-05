@@ -180,7 +180,7 @@ class Parser(DataSource):
       self.parse_records(count)
       self.complete()
     except Exception, exception:
-      self.cancel()
+      self.cancel(exception)
       raise
   
   def getFieldParser(self, fieldType):

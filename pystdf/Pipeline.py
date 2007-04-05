@@ -76,5 +76,5 @@ class DataSource(EventSource):
   
   def complete(self): pass
   
-  def cancel(self): pass
+  def cancel(self, exception): pass
   

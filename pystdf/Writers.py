@@ -19,6 +19,7 @@
 
 import sys, os
 from time import strftime, localtime
+from xml.sax.saxutils import quoteattr
 from pystdf import V4
 
 import pdb
@@ -58,4 +59,42 @@ class AtdfWriter:
         self.stream.write(line)
     
     def after_complete(self, dataSource):
+        self.stream.flush()
+
+class XmlWriter:
+    extra_entities = {'\0': ''}
+    
+    @staticmethod
+    def xml_format(rectype, field_index, value):
+        field_type = rectype.fieldStdfTypes[field_index]
+        if value is None:
+            return ""
+        elif rectype is V4.gdr:
+            return ';'.join([str(v) for v in value])
+        elif field_type[0] == 'k': # An Array of some other type
+            return ','.join([format_by_type(v, field_type[2:]) for v in value])
+        elif rectype is V4.mir or rectype is V4.mrr:
+            field_name = rectype.fieldNames[field_index]
+            if field_name.endswith('_T'): # A Date-Time in an MIR/MRR
+                return strftime('%H:%M:%ST%d-%b-%Y', localtime(value))
+            else:
+                return str(value)
+        else:
+            return str(value)
+    
+    def __init__(self, stream=sys.stdout):
+        self.stream = stream
+    
+    def before_begin(self, dataSource):
+        self.stream.write('<Stdf>\n')
+    
+    def after_send(self, dataSource, data):
+        self.stream.write('<%s' % (data[0].__class__.__name__))
+        for i, val in enumerate(data[1]):
+            fmtval = self.xml_format(data[0], i, val)
+            self.stream.write(' %s=%s' % (data[0].fieldNames[i], quoteattr(fmtval, self.extra_entities))) 
+        self.stream.write('/>\n')
+    
+    def after_complete(self, dataSource):
+        self.stream.write('</Stdf>\n')
         self.stream.flush()

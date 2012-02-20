@@ -1,0 +1,5 @@
+*.pyc
+*.swp
+*.swo
+build/
+docs/build

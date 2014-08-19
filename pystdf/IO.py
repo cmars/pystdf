@@ -160,6 +160,10 @@ class Parser(DataSource):
           if len(fields) < len(recType.columnNames):
             fields += [None] * (len(recType.columnNames) - len(fields))
           self.send((recType, fields))
+          if header.len > 0:
+            print >> sys.stderr, "Warning: Broken header. Unprocessed data left in", recType.__class__.__name__, "record. Working around it."
+            self.inp.read(header.len)
+            header.len = 0
         else:
           self.inp.read(header.len)
         if count:

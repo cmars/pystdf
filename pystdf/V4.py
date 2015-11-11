@@ -6,12 +6,12 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -111,7 +111,7 @@ from pystdf import TableTemplate
 
 import pdb
 
-class Far(RecordType):
+class Far(RecordType, metaclass=StdfRecordMeta):
   """
   **File Attributes Record (FAR)**
 
@@ -158,15 +158,14 @@ class Far(RecordType):
   Location:
     Required as the first record of the file.
   """
-  __metaclass__ = StdfRecordMeta
   typ = 0
   sub = 10
   fieldMap = (
     ('CPU_TYPE', 'U1'),
     ('STDF_VER', 'U1')
   )
-  
-class Atr(RecordType):
+
+class Atr(RecordType, metaclass=StdfRecordMeta):
   """
   **Audit Trail Record (ATR)**
 
@@ -202,7 +201,6 @@ class Atr(RecordType):
   Possible Use:
     Determining whether a particular filter has been applied to the data.
   """
-  __metaclass__ = StdfRecordMeta
   typ = 0
   sub = 20
   fieldMap = (
@@ -210,7 +208,7 @@ class Atr(RecordType):
     ('CMD_LINE', 'Cn')
   )
 
-class Mir(RecordType):
+class Mir(RecordType, metaclass=StdfRecordMeta):
   """
   **Master Information Record (MIR)**
 
@@ -278,7 +276,6 @@ class Mir(RecordType):
   Possible Use:
     Header information for all reports
   """
-  __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 10
   fieldMap = (
@@ -322,7 +319,7 @@ class Mir(RecordType):
     ('SUPR_NAM', 'Cn')
   )
 
-class Mrr(RecordType):
+class Mrr(RecordType, metaclass=StdfRecordMeta):
   """
   **Master Results Record (MRR)**
 
@@ -371,7 +368,6 @@ class Mrr(RecordType):
     Repair Report
     =========================     ============================
   """
-  __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 20
   fieldMap = (
@@ -381,7 +377,7 @@ class Mrr(RecordType):
     ('EXC_DESC', 'Cn')
   )
 
-class Pcr(RecordType):
+class Pcr(RecordType, metaclass=StdfRecordMeta):
   """
   **Part Count Record (PCR)**
 
@@ -433,7 +429,6 @@ class Pcr(RecordType):
     Site Summary Sheet         Report for Lot Tracking System
     =========================  ==============================
   """
-  __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 30
   fieldMap = (
@@ -446,7 +441,7 @@ class Pcr(RecordType):
     ('FUNC_CNT','U4')
   )
 
-class Hbr(RecordType):
+class Hbr(RecordType, metaclass=StdfRecordMeta):
   """
   **Hardware Bin Record (HBR)**
 
@@ -505,7 +500,6 @@ class Hbr(RecordType):
     Site Summary Sheet    Report for Lot Tracking System
     ===================== ==============================
   """
-  __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 40
   fieldMap = (
@@ -517,7 +511,7 @@ class Hbr(RecordType):
     ('HBIN_NAM','Cn')
   )
 
-class Sbr(RecordType):
+class Sbr(RecordType, metaclass=StdfRecordMeta):
   """
   **Software Bin Record (SBR)**
 
@@ -573,7 +567,6 @@ class Sbr(RecordType):
     Site Summary Sheet    Report for Lot Tracking System
     ===================== ================================
   """
-  __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 50
   fieldMap = (
@@ -585,7 +578,7 @@ class Sbr(RecordType):
     ('SBIN_NAM','Cn')
   )
 
-class Pmr(RecordType):
+class Pmr(RecordType, metaclass=StdfRecordMeta):
   """
   **Pin Map Record (PMR)**
 
@@ -642,7 +635,6 @@ class Pmr(RecordType):
     * Functional Datalog
     * Functional Histogram
   """
-  __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 60
   fieldMap = (
@@ -655,7 +647,7 @@ class Pmr(RecordType):
     ('SITE_NUM','U1')
   )
 
-class Pgr(RecordType):
+class Pgr(RecordType, metaclass=StdfRecordMeta):
   """
   **Pin Group Record (PGR)**
 
@@ -695,7 +687,6 @@ class Pgr(RecordType):
   Possible Use:
     Functional Datalog
   """
-  __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 62
   fieldMap = (
@@ -705,7 +696,7 @@ class Pgr(RecordType):
     ('PMR_INDX','k2U2')
   )
 
-class Plr(RecordType):
+class Plr(RecordType, metaclass=StdfRecordMeta):
   """
   **Pin List Record (PLR)**
 
@@ -801,7 +792,6 @@ class Plr(RecordType):
   Possible Use:
     Functional Datalog
   """
-  __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 63
   fieldMap = (
@@ -815,7 +805,7 @@ class Plr(RecordType):
     ('RTN_CHAL','k0Cn')
   )
 
-class Rdr(RecordType):
+class Rdr(RecordType, metaclass=StdfRecordMeta):
   """
   **Retest Data Record (RDR)**
 
@@ -854,7 +844,6 @@ class Rdr(RecordType):
   Possible Use:
     Tells data filtering programs how to handle retest data.
   """
-  __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 70
   fieldMap = (
@@ -862,7 +851,7 @@ class Rdr(RecordType):
     ('RTST_BIN','k0U2')
   )
 
-class Sdr(RecordType):
+class Sdr(RecordType, metaclass=StdfRecordMeta):
   """
   **Site Description Record (SDR)**
 
@@ -927,7 +916,6 @@ class Sdr(RecordType):
   Possible Use:
     Correlation of yield to interface or peripheral equipment
   """
-  __metaclass__ = StdfRecordMeta
   typ = 1
   sub = 80
   fieldMap = (
@@ -953,7 +941,7 @@ class Sdr(RecordType):
     ('EXTR_ID','Cn')
   )
 
-class Wir(RecordType):
+class Wir(RecordType, metaclass=StdfRecordMeta):
   """
   **Wafer Information Record (WIR)**
 
@@ -1000,7 +988,6 @@ class Wir(RecordType):
     * Datalog
     * Wafer Map
   """
-  __metaclass__ = StdfRecordMeta
   typ = 2
   sub = 10
   fieldMap = (
@@ -1010,7 +997,7 @@ class Wir(RecordType):
     ('WAFER_ID','Cn')
   )
 
-class Wrr(RecordType):
+class Wrr(RecordType, metaclass=StdfRecordMeta):
   """
   **Wafer Results Record (WRR)**
 
@@ -1076,7 +1063,6 @@ class Wrr(RecordType):
     * Datalog
     * Wafer Map
   """
-  __metaclass__ = StdfRecordMeta
   typ = 2
   sub = 20
   fieldMap = (
@@ -1096,7 +1082,7 @@ class Wrr(RecordType):
     ('EXC_DESC','Cn')
   )
 
-class Wcr(RecordType):
+class Wcr(RecordType, metaclass=StdfRecordMeta):
   """
   **Wafer Configuration Record (WCR)**
 
@@ -1142,7 +1128,6 @@ class Wcr(RecordType):
     CENTER_X, CENTER_Y:
       Use the value -32768 to indicate that the field is invalid.
   """
-  __metaclass__ = StdfRecordMeta
   typ = 2
   sub = 30
   fieldMap = (
@@ -1157,7 +1142,7 @@ class Wcr(RecordType):
     ('POS_Y','C1')
   )
 
-class Pir(RecordType):
+class Pir(RecordType, metaclass=StdfRecordMeta):
   """
   **Part Information Record (PIR)**
 
@@ -1197,7 +1182,6 @@ class Pir(RecordType):
   Possible Use:
     Datalog
   """
-  __metaclass__ = StdfRecordMeta
   typ = 5
   sub = 10
   fieldMap = (
@@ -1205,7 +1189,7 @@ class Pir(RecordType):
     ('SITE_NUM','U1')
   )
 
-class Prr(RecordType):
+class Prr(RecordType, metaclass=StdfRecordMeta):
   """
   **Part Results Record (PRR)**
 
@@ -1320,7 +1304,6 @@ class Prr(RecordType):
     * Shmoo Plot
     * Repair Data
   """
-  __metaclass__ = StdfRecordMeta
   typ = 5
   sub = 20
   fieldMap = (
@@ -1338,7 +1321,7 @@ class Prr(RecordType):
     ('PART_FIX','Bn')
   )
 
-class Tsr(RecordType):
+class Tsr(RecordType, metaclass=StdfRecordMeta):
   """
   **Test Synopsis Record (TSR)**
 
@@ -1420,7 +1403,6 @@ class Tsr(RecordType):
     Wafer Map               Functional Histogram
     ======================  ======================
   """
-  __metaclass__ = StdfRecordMeta
   typ = 10
   sub = 30
   fieldMap = (
@@ -1442,7 +1424,7 @@ class Tsr(RecordType):
     ('TST_SQRS','R4')
   )
 
-class Ptr(RecordType):
+class Ptr(RecordType, metaclass=StdfRecordMeta):
   """
   **Parametric Test Record (PTR)**
 
@@ -1670,7 +1652,6 @@ class Ptr(RecordType):
     * Histogram
     * Wafer Map
   """
-  __metaclass__ = StdfRecordMeta
   typ = 15
   sub = 10
   fieldMap = (
@@ -1696,7 +1677,7 @@ class Ptr(RecordType):
     ('HI_SPEC','R4')
   )
 
-class Mpr(RecordType):
+class Mpr(RecordType, metaclass=StdfRecordMeta):
   """
   **Multiple-Result Parametric Record (MPR)**
 
@@ -1934,7 +1915,6 @@ class Mpr(RecordType):
     * Datalog
     * Shmoo Plot
   """
-  __metaclass__ = StdfRecordMeta
   typ = 15
   sub = 15
   fieldMap = (
@@ -1967,7 +1947,7 @@ class Mpr(RecordType):
     ('HI_SPEC','R4')
   )
 
-class Ftr(RecordType):
+class Ftr(RecordType, metaclass=StdfRecordMeta):
   """
   **Functional Test Record (FTR)**
 
@@ -2215,7 +2195,6 @@ class Ftr(RecordType):
     * Functional Histogram
     * Functional Failure Analyzer
   """
-  __metaclass__ = StdfRecordMeta
   typ = 15
   sub = 20
   fieldMap = (
@@ -2249,7 +2228,7 @@ class Ftr(RecordType):
     ('SPIN_MAP','Dn')
   )
 
-class Bps(RecordType):
+class Bps(RecordType, metaclass=StdfRecordMeta):
   """
   **Begin Program Section Record (BPS)**
 
@@ -2276,14 +2255,13 @@ class Bps(RecordType):
   Possible Use:
     When performing analyses on a particular program segment's test.
   """
-  __metaclass__ = StdfRecordMeta
   typ = 20
   sub = 10
   fieldMap = (
     ('SEQ_NAME','Cn'),
   )
 
-class Eps(RecordType):
+class Eps(RecordType, metaclass=StdfRecordMeta):
   """
   **End Program Section Record (EPS)**
 
@@ -2321,12 +2299,11 @@ class Eps(RecordType):
     Because an EPS record does not contain the name of the sequencer, it should
     be assumed that each EPS record matches the last unmatched BPS record.
   """
-  __metaclass__ = StdfRecordMeta
   typ = 20
   sub = 20
   fieldMap = ()
 
-class Gdr(RecordType):
+class Gdr(RecordType, metaclass=StdfRecordMeta):
   """
   **Generic Data Record (GDR)**
 
@@ -2434,14 +2411,13 @@ class Gdr(RecordType):
   Possible Use:
     User-written reports
   """
-  __metaclass__ = StdfRecordMeta
   typ = 50
   sub = 10
   fieldMap = (
     ('GEN_DATA', 'Vn'),
   )
 
-class Dtr(RecordType):
+class Dtr(RecordType, metaclass=StdfRecordMeta):
   """
   **Datalog Text Record (DTR)**
 
@@ -2472,7 +2448,6 @@ class Dtr(RecordType):
   Possible Use:
     * Datalog
   """
-  __metaclass__ = StdfRecordMeta
   typ = 50
   sub = 30
   fieldMap = (

@@ -6,12 +6,12 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -54,7 +54,7 @@ class ProgressUpdater:
         self.notify_window = notify_window
         self.count = 0
         self.cancelled = False
-    
+
     def before_send(self, dataSource, data):
         if self.cancelled:
             raise MapperCancelled
@@ -63,7 +63,7 @@ class ProgressUpdater:
             self.notify_window.statusBar.SetStatusText('Mapped %d bytes' % (
                 dataSource.inp.tell()))
             self.notify_window.recordPositionList.SetItemCount(self.count)
-    
+
 class MapperCancelled(Exception): pass
 
 class MapperThread(Thread):
@@ -74,34 +74,35 @@ class MapperThread(Thread):
         self.progress_updater = ProgressUpdater(notify_window)
         self.parser.addSink(self.progress_updater)
         self.start()
-    
+
     def cancel(self):
         self.progress_updater.cancelled = True
-    
+
     def run(self):
         try:
             self.parser.parse()
             wx.PostEvent(self._notify_window, MappedEvent())
-        except Exception, what:
+        # except Exception, what:
+        except Exception as what:
             print >>sys.stderr, exc_string()
             wx.PostEvent(self._notify_window, MappedEvent(cancelled=True))
 
 def create(parent):
     return MainFrame(parent)
 
-[wxID_MAINFRAME, wxID_MAINFRAMERECORDPOSITIONLIST, 
- wxID_MAINFRAMERECORDVIEWLIST, wxID_MAINFRAMESTATUSBAR, 
+[wxID_MAINFRAME, wxID_MAINFRAMERECORDPOSITIONLIST,
+ wxID_MAINFRAMERECORDVIEWLIST, wxID_MAINFRAMESTATUSBAR,
 ] = [wx.NewId() for _init_ctrls in range(4)]
 
-[wxID_MAINFRAMEMENUFILECLOSE, wxID_MAINFRAMEMENUFILEEXIT, 
- wxID_MAINFRAMEMENUFILEOPEN, 
+[wxID_MAINFRAMEMENUFILECLOSE, wxID_MAINFRAMEMENUFILEEXIT,
+ wxID_MAINFRAMEMENUFILEOPEN,
 ] = [wx.NewId() for _init_coll_menuFile_Items in range(3)]
 
 [wxID_MAINFRAMEMENUHELPABOUT] = [wx.NewId() for _init_coll_menuHelp_Items in range(1)]
 
 class MainFrame(wx.Frame):
     _custom_classes = {'wx.ListCtrl': ['RecordPositionListCtrl','RecordViewListCtrl']}
-    
+
     def _init_coll_mainSizer_Items(self, parent):
         # generated method, don't edit
 
@@ -222,21 +223,21 @@ class MainFrame(wx.Frame):
         self._init_coll_recordViewList_Columns(self.recordViewList)
 
         self._init_sizers()
-        
+
     def __init__(self, parent):
         self._init_ctrls(parent)
         self.view_stream = None
         EVT_MAPPED(self, self.OnMapped)
-        
+
     def OnMenuHelpAboutMenu(self, event):
         event.Skip()
-    
+
     def OnMenuFileOpenMenu(self, event):
         dlg = wx.FileDialog(self, "Choose a file", ".", "", "*.*", wx.OPEN)
         try:
             if dlg.ShowModal() == wx.ID_OK:
                 filename = dlg.GetPath()
-                
+
                 # Set up the mapping parser
                 self.map_stream = open(filename, 'rb')
                 parser = Parser(inp=self.map_stream)
@@ -246,20 +247,20 @@ class MainFrame(wx.Frame):
                 parser.addSink(material_mapper)
                 self.recordPositionList.record_mapper = self.record_mapper
                 self.recordPositionList.material_mapper = material_mapper
-                
+
                 # Set up the viewing parser
                 self.view_stream = open(filename, 'rb')
                 self.view_parser = Parser(inp=self.view_stream)
                 self.record_keeper = RecordKeeper()
                 self.view_parser.addSink(self.record_keeper)
                 self.view_parser.parse(1)
-                
+
                 # Parse the file in a separate thread
                 self.mapper = MapperThread(self, parser)
-        
+
         finally:
             dlg.Destroy()
-    
+
     def OnMapped(self, event):
         if event.cancelled:
             self.statusBar.SetStatusText('%s... Cancelled!' % (
@@ -269,12 +270,12 @@ class MainFrame(wx.Frame):
                 len(self.record_mapper.indexes))
             self.statusBar.SetStatusText('%s... Done' % (
                 self.statusBar.GetStatusText()))
-        
+
         if self.map_stream is not None:
             self.map_stream.close()
             self.map_stream = None
         self.mapper = None
-        
+
     def OnMenuFileCloseMenu(self, event):
         self.recordPositionList.record_mapper = None
         self.recordPositionList.material_mapper = None
@@ -282,21 +283,20 @@ class MainFrame(wx.Frame):
         self.view_stream = None
         self.view_parser = None
         self.record_mapper = None
-        
+
         self.recordPositionList.SetItemCount(0)
         self.recordPositionList.Refresh()
         self.recordViewList.SetItemCount(0)
         self.recordViewList.Refresh()
-        
+
         if self.mapper:
             self.mapper.cancel()
-    
+
     def OnMenuFileExitMenu(self, event):
         self.Close()
-    
+
     def OnRecordPositionListListItemSelected(self, event):
         if self.record_mapper:
             self.view_stream.seek(self.record_mapper.indexes[event.GetIndex()])
             self.view_parser.parse(1)
-            self.recordViewList.record = self.record_keeper.record_type, self.record_keeper.record_data 
-        
+            self.recordViewList.record = self.record_keeper.record_type, self.record_keeper.record_data

@@ -6,12 +6,12 @@
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -31,7 +31,7 @@ def format_by_type(value, field_type):
         return str(value)
 
 class AtdfWriter:
-    
+
     @staticmethod
     def atdf_format(rectype, field_index, value):
         field_type = rectype.fieldStdfTypes[field_index]
@@ -49,21 +49,21 @@ class AtdfWriter:
                 return str(value)
         else:
             return str(value)
-    
+
     def __init__(self, stream=sys.stdout):
         self.stream = stream
-    
+
     def after_send(self, dataSource, data):
-        line = '%s:%s%s' % (data[0].__class__.__name__,
+        line = '%s:%s%s' % (data[0].__class__.__name__.upper(),
             '|'.join([self.atdf_format(data[0], i, val) for i, val in enumerate(data[1])]), '\n')
         self.stream.write(line)
-    
+
     def after_complete(self, dataSource):
         self.stream.flush()
 
 class XmlWriter:
     extra_entities = {'\0': ''}
-    
+
     @staticmethod
     def xml_format(rectype, field_index, value):
         field_type = rectype.fieldStdfTypes[field_index]
@@ -81,20 +81,20 @@ class XmlWriter:
                 return str(value)
         else:
             return str(value)
-    
+
     def __init__(self, stream=sys.stdout):
         self.stream = stream
-    
+
     def before_begin(self, dataSource):
         self.stream.write('<Stdf>\n')
-    
+
     def after_send(self, dataSource, data):
         self.stream.write('<%s' % (data[0].__class__.__name__))
         for i, val in enumerate(data[1]):
             fmtval = self.xml_format(data[0], i, val)
-            self.stream.write(' %s=%s' % (data[0].fieldNames[i], quoteattr(fmtval, self.extra_entities))) 
+            self.stream.write(' %s=%s' % (data[0].fieldNames[i], quoteattr(fmtval, self.extra_entities)))
         self.stream.write('/>\n')
-    
+
     def after_complete(self, dataSource):
         self.stream.write('</Stdf>\n')
         self.stream.flush()

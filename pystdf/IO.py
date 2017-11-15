@@ -51,7 +51,10 @@ class Parser(DataSource):
       raise EofException()
     header.len -= len(buf)
     val,=struct.unpack(self.endian + fmt, buf)
-    return val
+    if isinstance(val,bytes):
+        return val.decode("ascii")
+    else:
+        return val
 
   def readAndUnpackDirect(self, fmt):
     size = struct.calcsize(fmt)
@@ -84,7 +87,7 @@ class Parser(DataSource):
       raise EofException()
     header.len -= len(buf)
     val,=struct.unpack(str(slen) + "s", buf)
-    return val
+    return val.decode("ascii")
 
   def readBn(self, header):
     blen = self.readField(header, "U1")

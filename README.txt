@@ -13,7 +13,7 @@ record "events" in callback functions
 
 Refer to the provided command line scripts for ideas on how to use PySTDF:
 
-stdf_atdf, a PySTDF implementation of an STDF-to-ATDF converter.
+stdf2text, convert STDF to '|' delimited text format.
 stdf_slice, an example of how to seek to a specific record offset in the STDF.
 
 I have also included a very basic STDF viewer GUI, StdfExplorer.  I have plans 

@@ -30,10 +30,10 @@ def format_by_type(value, field_type):
     else:
         return str(value)
 
-class AtdfWriter:
+class TextWriter:
 
     @staticmethod
-    def atdf_format(rectype, field_index, value):
+    def text_format(rectype, field_index, value):
         field_type = rectype.fieldStdfTypes[field_index]
         if value is None:
             return ""
@@ -55,7 +55,7 @@ class AtdfWriter:
 
     def after_send(self, dataSource, data):
         line = '%s:%s%s' % (data[0].__class__.__name__.upper(),
-            '|'.join([self.atdf_format(data[0], i, val) for i, val in enumerate(data[1])]), '\n')
+            '|'.join([self.text_format(data[0], i, val) for i, val in enumerate(data[1])]), '\n')
         self.stream.write(line)
 
     def after_complete(self, dataSource):

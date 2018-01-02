@@ -31,6 +31,9 @@ def format_by_type(value, field_type):
         return str(value)
 
 class TextWriter:
+    def __init__(self, stream=sys.stdout, delimiter='|'):
+        self.stream = stream
+        self.delimiter = delimiter
 
     @staticmethod
     def text_format(rectype, field_index, value):
@@ -38,7 +41,7 @@ class TextWriter:
         if value is None:
             return ""
         elif rectype is V4.gdr:
-            return '|'.join([str(v) for v in value])
+            return self.delimiter.join([str(v) for v in value])
         elif field_type[0] == 'k': # An Array of some other type
             return ','.join([format_by_type(v, field_type[2:]) for v in value])
         elif rectype is V4.mir or rectype is V4.mrr:
@@ -50,12 +53,9 @@ class TextWriter:
         else:
             return str(value)
 
-    def __init__(self, stream=sys.stdout):
-        self.stream = stream
-
     def after_send(self, dataSource, data):
-        line = '%s:%s%s' % (data[0].__class__.__name__.upper(),
-            '|'.join([self.text_format(data[0], i, val) for i, val in enumerate(data[1])]), '\n')
+        line = '%s%s%s\n' % (data[0].__class__.__name__.upper(),self.delimiter,
+            self.delimiter.join([self.text_format(data[0], i, val) for i, val in enumerate(data[1])]))
         self.stream.write(line)
 
     def after_complete(self, dataSource):

@@ -14,6 +14,7 @@ record "events" in callback functions
 Refer to the provided command line scripts for ideas on how to use PySTDF:
 
 stdf2text, convert STDF to '|' delimited text format.
+stdf2excel, convert STDF to MS Excel.
 stdf_slice, an example of how to seek to a specific record offset in the STDF.
 
 I have also included a very basic STDF viewer GUI, StdfExplorer.  I have plans 

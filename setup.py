@@ -45,7 +45,7 @@ PySTDF is released under a GPL license. Applications developed with PySTDF can o
     author_email='casey.marshall@gmail.com',
     url='http://code.google.com/p/pystdf/',
     packages=['pystdf','pystdf.explorer'],
-    scripts=['scripts/stdf_slice', 'scripts/rec_index', 'scripts/stdf2atdf', 
+    scripts=['scripts/stdf_slice', 'scripts/rec_index',
              'scripts/stdf2xml'],
     classifiers=[
       'Development Status :: 4 - Beta',

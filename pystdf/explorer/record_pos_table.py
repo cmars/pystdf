@@ -26,7 +26,7 @@ class RecordPositionTable(gridlib.PyGridTableBase):
         self.record_mapper = record_mapper
         
     def GetNumberRows(self):
-        print 'GetNumberRows: %d' % (len(self.record_mapper.indexes))
+        print('GetNumberRows: %d' % (len(self.record_mapper.indexes)))
         return len(self.record_mapper.indexes)
     
     def GetNumberCols(self): 

@@ -18,20 +18,27 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+import sys
+
 from pystdf.IO import Parser
-from pystdf.Mapping import *
-from pystdf.Writers import *
+from pystdf.Mapping import StreamMapper
+from pystdf.Writers import TextWriter
+
+
+def text_slice(file_name, start_index, record_count):
+    f = open(file_name, 'rb')
+    p = Parser(inp=f)
+    record_mapper = StreamMapper()
+    p.addSink(record_mapper)
+    p.parse(count=start_index+record_count)
+    p.addSink(TextWriter())
+    f.seek(record_mapper.indexes[start_index])
+    p.parse(count=record_count)
+
 
 if __name__ == '__main__':
     filename, start, count = sys.argv[1:4]
     start = int(start)
     count = int(count)
 
-    f = open(filename, 'rb')
-    p=Parser(inp=f)
-    record_mapper = StreamMapper()
-    p.addSink(record_mapper)
-    p.parse(count=start+count)
-    p.addSink(AtdfWriter())
-    f.seek(record_mapper.indexes[start])
-    p.parse(count=count)
+    text_slice(filename, start, count)

@@ -19,50 +19,49 @@
 #
 
 from __future__ import print_function
-import sys, re
+import sys
+import re
 
 try:
     import gzip
-    have_gzip = True
 except ImportError:
-    have_gzip = False
+    gzip = None
 try:
     import bz2
-    have_bz2 = True
 except ImportError:
-    have_bz2 = False
+    bz2 = None
 
 from pystdf.IO import Parser
 from pystdf.Writers import XmlWriter
-import pystdf.V4
 
-gzPattern = re.compile('\.g?z', re.I)
-bz2Pattern = re.compile('\.bz2', re.I)
 
-def process_file(fn):
-    filename, = sys.argv[1:]
+GZ_PATTERN = re.compile('\.g?z', re.I)
+BZ2_PATTERN = re.compile('\.bz2', re.I)
 
+
+def process_file(filename):
     reopen_fn = None
     if filename is None:
         f = sys.stdin
-    elif gzPattern.search(filename):
-        if not have_gzip:
+    elif GZ_PATTERN.search(filename):
+        if not gzip:
             print("gzip is not supported on this system", file=sys.stderr)
             sys.exit(1)
         reopen_fn = lambda: gzip.open(filename, 'rb')
         f = reopen_fn()
-    elif bz2Pattern.search(filename):
-        if not have_bz2:
+    elif BZ2_PATTERN.search(filename):
+        if not bz2:
             print("bz2 is not supported on this system", file=sys.stderr)
             sys.exit(1)
         reopen_fn = lambda: bz2.BZ2File(filename, 'rb')
         f = reopen_fn()
     else:
         f = open(filename, 'rb')
-    p=Parser(inp=f, reopen_fn=reopen_fn)
+    p = Parser(inp=f, reopen_fn=reopen_fn)
     p.addSink(XmlWriter())
     p.parse()
     f.close()
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

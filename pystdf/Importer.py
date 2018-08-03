@@ -23,6 +23,21 @@ import numpy as np
 import pandas as pd
 from pystdf.IO import Parser
 from pystdf.Writers import TextWriter
+import re
+
+try:
+    import gzip
+    have_gzip = True
+except ImportError:
+    have_gzip = False
+try:
+    import bz2
+    have_bz2 = True
+except ImportError:
+    have_bz2 = False
+
+gzPattern = re.compile('\.g?z', re.I)
+bz2Pattern = re.compile('\.bz2', re.I)
 
 class MemoryWriter:
     def __init__(self):
@@ -34,24 +49,40 @@ class MemoryWriter:
     def flush(self):
         pass # Do nothing
 
+def OpenSTDFparser(fname):
+    reopen_fn = None
+    if gzPattern.search(fname):
+        if not have_gzip:
+            raise RuntimeError('gzip is not supported on this system')
+        reopen_fn = lambda: gzip.open(fname, 'rb')
+        f = reopen_fn()
+    elif bz2Pattern.search(fname):
+        if not have_bz2:
+            raise RuntimeError('bz2 is not supported on this system')
+        reopen_fn = lambda: bz2.BZ2File(fname, 'rb')
+        f = reopen_fn()
+    else:
+        f = open(fname, 'rb')
+    p = Parser(inp=f, reopen_fn=reopen_fn)
+    return p, f
+
 def ImportSTDF(fname):
-    with open(fname,'rb') as fin:
-        p = Parser(inp=fin)
-        storage = MemoryWriter()
-        p.addSink(storage)
-        p.parse()
+    p, f = OpenSTDFparser(fname)
+    storage = MemoryWriter()
+    p.addSink(storage)
+    p.parse()
+    f.close()
     return storage.data
 
 def STDF2Text(fname,delimiter='|'):
     """ Convert STDF to a list of text representation
     """
-    with open(fname,'rb') as fin:
-        p = Parser(inp=fin)
-        storage = MemoryWriter()
-        p.addSink(TextWriter(storage,delimiter=delimiter))
-        p.parse()
-        return storage.data
-    return None
+    p, f = OpenSTDFparser(fname)
+    storage = MemoryWriter()
+    p.addSink(TextWriter(storage,delimiter=delimiter))
+    p.parse()
+    f.close()
+    return storage.data
 
 def STDF2Dict(fname):
     """ Convert STDF to a list of dictionary objects

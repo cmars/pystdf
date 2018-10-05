@@ -106,8 +106,8 @@ class MainFrame(wx.Frame):
     def _init_coll_mainSizer_Items(self, parent):
         # generated method, don't edit
 
-        parent.AddWindow(self.recordPositionList, 1, border=0, flag=0)
-        parent.AddWindow(self.recordViewList, 2, border=0, flag=0)
+        parent.Add(self.recordPositionList, 1, border=0, flag=0)
+        parent.Add(self.recordViewList, 2, border=0, flag=0)
 
     def _init_coll_mainMenuBar_Menus(self, parent):
         # generated method, don't edit
@@ -118,7 +118,7 @@ class MainFrame(wx.Frame):
     def _init_coll_menuHelp_Items(self, parent):
         # generated method, don't edit
 
-        parent.Append(help=u'', id=wxID_MAINFRAMEMENUHELPABOUT,
+        parent.Append(helpString=u'', id=wxID_MAINFRAMEMENUHELPABOUT,
               kind=wx.ITEM_NORMAL, text=u'About')
         self.Bind(wx.EVT_MENU, self.OnMenuHelpAboutMenu,
               id=wxID_MAINFRAMEMENUHELPABOUT)
@@ -126,11 +126,11 @@ class MainFrame(wx.Frame):
     def _init_coll_menuFile_Items(self, parent):
         # generated method, don't edit
 
-        parent.Append(help='', id=wxID_MAINFRAMEMENUFILEOPEN,
+        parent.Append(helpString='', id=wxID_MAINFRAMEMENUFILEOPEN,
               kind=wx.ITEM_NORMAL, text=u'Open')
-        parent.Append(help='', id=wxID_MAINFRAMEMENUFILECLOSE,
+        parent.Append(helpString='', id=wxID_MAINFRAMEMENUFILECLOSE,
               kind=wx.ITEM_NORMAL, text=u'Close')
-        parent.Append(help='', id=wxID_MAINFRAMEMENUFILEEXIT,
+        parent.Append(helpString='', id=wxID_MAINFRAMEMENUFILEEXIT,
               kind=wx.ITEM_NORMAL, text=u'Exit')
         self.Bind(wx.EVT_MENU, self.OnMenuFileOpenMenu,
               id=wxID_MAINFRAMEMENUFILEOPEN)
@@ -165,7 +165,7 @@ class MainFrame(wx.Frame):
         # generated method, don't edit
         parent.SetFieldsCount(1)
 
-        parent.SetStatusText(number=0, text=u'Status')
+        parent.SetStatusText(i=0, text=u'Status')
 
         parent.SetStatusWidths([-1])
 
@@ -233,7 +233,7 @@ class MainFrame(wx.Frame):
         event.Skip()
 
     def OnMenuFileOpenMenu(self, event):
-        dlg = wx.FileDialog(self, "Choose a file", ".", "", "*.*", wx.OPEN)
+        dlg = wx.FileDialog(self, "Choose a file", ".", "", "*.*")
         try:
             if dlg.ShowModal() == wx.ID_OK:
                 filename = dlg.GetPath()

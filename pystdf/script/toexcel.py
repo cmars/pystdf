@@ -19,36 +19,37 @@
 #
 # Modified: 2017 Minh-Hai Nguyen
 #
-import sys, os
+
+import sys
 from pystdf.Importer import STDF2DataFrame
-import pystdf.V4
+from pystdf import V4
 import pandas as pd
 
 
-def toExcel(fname,tables):
-    """ Export the tables from toTables to Excel
+def to_excel(stdf_file, xlsx_file=None):
     """
-    writer = pd.ExcelWriter(fname)
-    for k,v in tables.items():
-        # Make sure the order of columns complies the specs
-        record = [r for r in V4.records if r.__class__.__name__.upper()==k]
-        if len(record)==0:
-            print("Ignore exporting table %s: No such record type exists." %k)
+    Export the tables from toTables to Excel.
+    """
+    if xlsx_file is None:
+        xlsx_file = stdf_file[:stdf_file.rfind('.')] + ".xlsx"
+    print("Importing %s" % stdf_file)
+    tables = STDF2DataFrame(stdf_file)
+    print("Exporting to %s" % xlsx_file)
+
+    writer = pd.ExcelWriter(xlsx_file)
+    for k, v in tables.items():
+        # Make sure the order of columns complies to the specs
+        record = [r for r in V4.records if r.__class__.__name__.upper() == k]
+        if len(record) == 0:
+            print("Ignore exporting table %s: No such record type exists." % k)
         else:
             columns = [field[0] for field in record[0].fieldMap]
-            v.to_excel(writer,sheet_name=k,columns=columns,index=False,na_rep="N/A")
+            v.to_excel(writer, sheet_name=k, columns=columns, index=False, na_rep="N/A")
     writer.save()
 
-if __name__=="__main__":
-    if len(sys.argv)==1:
+
+if __name__ == "__main__":
+    if len(sys.argv) == 1:
         print("Usage: %s <stdf file>" % (sys.argv[0]))
     else:
-        fin = sys.argv[1]
-        if len(sys.argv)>2:
-            fout = sys.argv[2]
-        else:
-            fout = fin[:fin.rfind('.')]+".xlsx"
-        print("Importing %s" %fin)
-        dfs= STDF2DataFrame(fin)
-        print("Exporting to %s" %fout)
-        toExcel(fout,dfs)
+        to_excel(sys.argv[1], sys.argv[2])

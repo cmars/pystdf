@@ -19,59 +19,51 @@
 #
 
 from __future__ import print_function
-import sys, os, re
+import sys
+import re
 
 try:
     import gzip
-    have_gzip = True
 except ImportError:
-    have_gzip = False
+    gzip = None
 try:
     import bz2
-    have_bz2 = True
 except ImportError:
-    have_bz2 = False
+    bz2 = None
 
 from pystdf.IO import Parser
 from pystdf.Indexing import RecordIndexer
-import pystdf.V4
 
-#def info(type, value, tb):
-#    import traceback, pdb
-#    # You are not in interactive mode; print the exception
-#    traceback.print_exception(type, value, tb)
-#    print
-#    # ... then star the debugger in post-mortem mode
-#    pdb.pm()
-#sys.excepthook = info
 
-gzPattern = re.compile('\.g?z', re.I)
-bz2Pattern = re.compile('\.bz2', re.I)
+GZ_PATTERN = re.compile('\.g?z', re.I)
+BZ2_PATTERN = re.compile('\.bz2', re.I)
 
-def process_file(fn):
-    filename, = sys.argv[1:]
 
+def process_file(file_name):
     reopen_fn = None
-    if filename is None:
+    if file_name is None:
         f = sys.stdin
-    elif gzPattern.search(filename):
-        if not have_gzip:
+    elif GZ_PATTERN.search(file_name):
+        if not gzip:
             print("gzip is not supported on this system", file=sys.stderr)
             sys.exit(1)
-        reopen_fn = lambda: gzip.open(filename, 'rb')
+        reopen_fn = lambda: gzip.open(file_name, 'rb')
         f = reopen_fn()
-    elif bz2Pattern.search(filename):
-        if not have_bz2:
+    elif BZ2_PATTERN.search(file_name):
+        if not bz2:
             print("bz2 is not supported on this system", file=sys.stderr)
             sys.exit(1)
-        reopen_fn = lambda: bz2.BZ2File(filename, 'rb')
+        reopen_fn = lambda: bz2.BZ2File(file_name, 'rb')
         f = reopen_fn()
     else:
-        f = open(filename, 'rb')
-    p=Parser(inp=f, reopen_fn=reopen_fn)
-    p.addSink(RecordIndexer())
+        f = open(file_name, 'rb')
+    indexer = RecordIndexer()
+    p = Parser(inp=f, reopen_fn=reopen_fn)
+    p.addSink(indexer)
     p.parse()
     f.close()
+    print("Record count: ", indexer.recid)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

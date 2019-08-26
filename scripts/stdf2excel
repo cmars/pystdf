@@ -21,7 +21,7 @@
 #
 import sys, os
 from pystdf.Importer import STDF2DataFrame
-import pystdf.V4
+import pystdf.V4 as V4
 import pandas as pd
 
 

@@ -93,7 +93,7 @@ class Parser(DataSource):
     blen = self.readField(header, "U1")
     bn = []
     for i in range(0, blen):
-      bn.append(readField(header, "B1"))
+      bn.append(self.readField(header, "B1"))
     return bn
 
   def readDn(self, header):

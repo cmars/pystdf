@@ -218,7 +218,7 @@ class Parser(DataSource):
         for recType in recTypes ])
 
     self.unpackMap = {
-      "C1": self.readField,
+      "C1": lambda header, fmt: self.readCn(header),
       "B1": self.readField,
       "U1": self.readField,
       "U2": self.readField,

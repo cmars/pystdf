@@ -17,15 +17,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-import sys
-
-import struct
 import re
+import struct
+import logging
 
-from pystdf.Types import *
 from pystdf import V4
-
 from pystdf.Pipeline import DataSource
+from pystdf.Types import *
+
 
 def appendFieldParser(fn, action):
   """Append a field parsing function to a record parsing function.
@@ -87,7 +86,13 @@ class Parser(DataSource):
       raise EofException()
     header.len -= len(buf)
     val,=struct.unpack(str(slen) + "s", buf)
-    return val.decode("ascii")
+    try:
+      return val.decode("ascii")
+    except UnicodeDecodeError:
+      try:
+        return val.decode("ansi")
+      except UnicodeDecodeError:
+        return ''.join([chr(c) if 32 <= c < 128 else '?' for c in val])
 
   def readBn(self, header):
     blen = self.readField(header, "U1")

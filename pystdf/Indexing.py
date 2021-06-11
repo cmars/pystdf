@@ -109,6 +109,6 @@ class MaterialIndexer:
       self.lastWafer += 1
       self.currentWafer[headSite[0]] = self.lastWafer
 
-  def onWrr(self, fields):
+  def onWrr(self, headSite):
     self.currentWafer[headSite[0]]
 

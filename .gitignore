@@ -3,3 +3,5 @@
 *.swo
 build/
 docs/build
+MANIFEST
+dist/

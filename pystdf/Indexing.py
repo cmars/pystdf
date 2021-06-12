@@ -88,6 +88,7 @@ class MaterialIndexer:
       self.onPrr(headSite)
     elif isinstance(recType, V4.Wrr):
       headSite = (fields[V4.Wrr.HEAD_NUM], fields[V4.Wrr.SITE_NUM])
+      headSite = (fields[V4.Wrr.HEAD_NUM], None) # fields[V4.Wrr.SITE_NUM] Does not exist
       self.onWrr(headSite)
 
   def onPir(self, headSite):

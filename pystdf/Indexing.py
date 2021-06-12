@@ -87,7 +87,6 @@ class MaterialIndexer:
       headSite = (fields[V4.Prr.HEAD_NUM], fields[V4.Prr.SITE_NUM])
       self.onPrr(headSite)
     elif isinstance(recType, V4.Wrr):
-      headSite = (fields[V4.Wrr.HEAD_NUM], fields[V4.Wrr.SITE_NUM])
       headSite = (fields[V4.Wrr.HEAD_NUM], None) # fields[V4.Wrr.SITE_NUM] Does not exist
       self.onWrr(headSite)
 

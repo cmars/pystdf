@@ -118,7 +118,7 @@ class MainFrame(wx.Frame):
     def _init_coll_menuHelp_Items(self, parent):
         # generated method, don't edit
 
-        parent.Append(helpString=u'', id=wxID_MAINFRAMEMENUHELPABOUT,
+        parent.Append(id=wxID_MAINFRAMEMENUHELPABOUT,
               kind=wx.ITEM_NORMAL, item=u'About')
         self.Bind(wx.EVT_MENU, self.OnMenuHelpAboutMenu,
               id=wxID_MAINFRAMEMENUHELPABOUT)
@@ -126,11 +126,11 @@ class MainFrame(wx.Frame):
     def _init_coll_menuFile_Items(self, parent):
         # generated method, don't edit
 
-        parent.Append(helpString='', id=wxID_MAINFRAMEMENUFILEOPEN,
+        parent.Append(id=wxID_MAINFRAMEMENUFILEOPEN,
               kind=wx.ITEM_NORMAL, item=u'Open')
-        parent.Append(helpString='', id=wxID_MAINFRAMEMENUFILECLOSE,
+        parent.Append(id=wxID_MAINFRAMEMENUFILECLOSE,
               kind=wx.ITEM_NORMAL, item=u'Close')
-        parent.Append(helpString='', id=wxID_MAINFRAMEMENUFILEEXIT,
+        parent.Append(id=wxID_MAINFRAMEMENUFILEEXIT,
               kind=wx.ITEM_NORMAL, item=u'Exit')
         self.Bind(wx.EVT_MENU, self.OnMenuFileOpenMenu,
               id=wxID_MAINFRAMEMENUFILEOPEN)
@@ -165,7 +165,7 @@ class MainFrame(wx.Frame):
         # generated method, don't edit
         parent.SetFieldsCount(1)
 
-        parent.SetStatusText(i=0, text=u'Status')
+        parent.SetStatusText(u'Status')
 
         parent.SetStatusWidths([-1])
 

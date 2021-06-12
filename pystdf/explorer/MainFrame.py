@@ -37,7 +37,7 @@ from threading import *
 from pystdf.logexcept import exc_string
 
 # Define notification event for thread completion
-EVT_MAPPED_ID = wx.NewId()
+EVT_MAPPED_ID = wx.Window.NewControlId()
 
 def EVT_MAPPED(win, func):
     """Define Mapped Event."""
@@ -92,13 +92,13 @@ def create(parent):
 
 [wxID_MAINFRAME, wxID_MAINFRAMERECORDPOSITIONLIST,
  wxID_MAINFRAMERECORDVIEWLIST, wxID_MAINFRAMESTATUSBAR,
-] = [wx.NewId() for _init_ctrls in range(4)]
+] = [wx.Window.NewControlId() for _init_ctrls in range(4)]
 
 [wxID_MAINFRAMEMENUFILECLOSE, wxID_MAINFRAMEMENUFILEEXIT,
  wxID_MAINFRAMEMENUFILEOPEN,
-] = [wx.NewId() for _init_coll_menuFile_Items in range(3)]
+] = [wx.Window.NewControlId() for _init_coll_menuFile_Items in range(3)]
 
-[wxID_MAINFRAMEMENUHELPABOUT] = [wx.NewId() for _init_coll_menuHelp_Items in range(1)]
+[wxID_MAINFRAMEMENUHELPABOUT] = [wx.Window.NewControlId() for _init_coll_menuHelp_Items in range(1)]
 
 class MainFrame(wx.Frame):
     _custom_classes = {'wx.ListCtrl': ['RecordPositionListCtrl','RecordViewListCtrl']}
@@ -119,7 +119,7 @@ class MainFrame(wx.Frame):
         # generated method, don't edit
 
         parent.Append(helpString=u'', id=wxID_MAINFRAMEMENUHELPABOUT,
-              kind=wx.ITEM_NORMAL, text=u'About')
+              kind=wx.ITEM_NORMAL, item=u'About')
         self.Bind(wx.EVT_MENU, self.OnMenuHelpAboutMenu,
               id=wxID_MAINFRAMEMENUHELPABOUT)
 
@@ -127,11 +127,11 @@ class MainFrame(wx.Frame):
         # generated method, don't edit
 
         parent.Append(helpString='', id=wxID_MAINFRAMEMENUFILEOPEN,
-              kind=wx.ITEM_NORMAL, text=u'Open')
+              kind=wx.ITEM_NORMAL, item=u'Open')
         parent.Append(helpString='', id=wxID_MAINFRAMEMENUFILECLOSE,
-              kind=wx.ITEM_NORMAL, text=u'Close')
+              kind=wx.ITEM_NORMAL, item=u'Close')
         parent.Append(helpString='', id=wxID_MAINFRAMEMENUFILEEXIT,
-              kind=wx.ITEM_NORMAL, text=u'Exit')
+              kind=wx.ITEM_NORMAL, item=u'Exit')
         self.Bind(wx.EVT_MENU, self.OnMenuFileOpenMenu,
               id=wxID_MAINFRAMEMENUFILEOPEN)
         self.Bind(wx.EVT_MENU, self.OnMenuFileCloseMenu,

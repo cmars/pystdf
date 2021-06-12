@@ -3,3 +3,4 @@
 *.swo
 build/
 docs/build
+.venv

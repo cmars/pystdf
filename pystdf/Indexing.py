@@ -78,7 +78,7 @@ class MaterialIndexer:
       headSite = (fields[V4.Pir.HEAD_NUM], fields[V4.Pir.SITE_NUM])
       self.onPir(headSite)
     elif isinstance(recType, V4.Wir):
-      headSite = (fields[V4.Pir.HEAD_NUM], fields[V4.Pir.SITE_NUM])
+      headSite = (fields[V4.Wir.HEAD_NUM], None) # fields[V4.Wir.SITE_NUM] Does not exist
       self.onWir(headSite)
 
   def after_send(self, dataSource, data):

@@ -236,7 +236,7 @@ class Parser(DataSource):
         for recType in recTypes ])
 
     self.vnMap = {
-      0: lambda header: self.inp.read(header, 1),
+      0: lambda header: self.inp.read(1),
       1: lambda header: self.readField(header, "U1"),
       2: lambda header: self.readField(header, "U2"),
       3: lambda header: self.readField(header, "U4"),

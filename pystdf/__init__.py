@@ -1,6 +1,6 @@
 #
 # PySTDF - The Pythonic STDF Parser
-# Copyright (C) 2006 Casey Marshall
+# Copyright (C) 2006-2023 Casey Marshall
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,9 +17,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-from pystdf.TableTemplate import TableTemplate
+from pystdf.table_template import TableTemplate
 
-from pystdf.BinSummarizer import BinSummarizer
-from pystdf.ParametricSummarizer import ParametricSummarizer
-from pystdf.PartSummarizer import PartSummarizer
-from pystdf.Indexing import *
+from pystdf.bin_summarizer import BinSummarizer
+from pystdf.parametric_summarizer import ParametricSummarizer
+from pystdf.part_summarizer import PartSummarizer
+from pystdf.indexing import *

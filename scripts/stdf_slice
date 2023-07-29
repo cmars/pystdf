@@ -18,9 +18,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-from pystdf.IO import Parser
-from pystdf.Mapping import *
-from pystdf.Writers import *
+from pystdf.io import Parser
+from pystdf.mapping import *
+from pystdf.writers import *
 
 if __name__ == '__main__':
     filename, start, count = sys.argv[1:4]

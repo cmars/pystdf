@@ -20,8 +20,8 @@
 # Modified: 2017 Minh-Hai Nguyen
 #
 import sys, os
-from pystdf.Importer import STDF2DataFrame
-import pystdf.V4 as V4
+from pystdf.importer import STDF2DataFrame
+import pystdf.v4 as V4
 import pandas as pd
 
 

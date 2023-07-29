@@ -1,9 +1,10 @@
 { pkgs ? import <nixpkgs> {} }:
   pkgs.mkShell {
     nativeBuildInputs = with pkgs.buildPackages; [
-      python37
-      python37.pip
-      python37.six
+      python310
+      python310Packages.pip
+      python310Packages.poetry
+      python310Packages.black
     ];
     shellHook = ''
       [ -d .venv ] || python3 -m venv .venv

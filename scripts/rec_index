@@ -32,18 +32,10 @@ try:
 except ImportError:
     have_bz2 = False
 
-from pystdf.IO import Parser
-from pystdf.Indexing import RecordIndexer
-import pystdf.V4
+from pystdf.io import Parser
+from pystdf.indexing import RecordIndexer
+import pystdf.v4
 
-#def info(type, value, tb):
-#    import traceback, pdb
-#    # You are not in interactive mode; print the exception
-#    traceback.print_exception(type, value, tb)
-#    print
-#    # ... then star the debugger in post-mortem mode
-#    pdb.pm()
-#sys.excepthook = info
 
 gzPattern = re.compile('\.g?z', re.I)
 bz2Pattern = re.compile('\.bz2', re.I)

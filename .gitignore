@@ -1,6 +1,6 @@
 *.pyc
 *.swp
 *.swo
-build/
-docs/build
-.venv
+/build/
+/docs/build
+/.venv

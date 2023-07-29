@@ -17,17 +17,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-from pystdf.Types import *
-from pystdf.Indexing import *
-from pystdf import V4
+from pystdf.types import *
+from pystdf.indexing import *
+from pystdf.v4 import V4
+
 
 class StreamMapper(StreamIndexer):
-
     def __init__(self, types=V4.records):
         self.indexes = []
         self.types = []
-        self.__rec_map = dict([((recType.typ, recType.sub), recType)
-                                for recType in types])
+        self.__rec_map = dict(
+            [((recType.typ, recType.sub), recType) for recType in types]
+        )
 
     def before_header(self, dataSource, header):
         StreamIndexer.before_header(self, dataSource, header)
@@ -35,6 +36,7 @@ class StreamMapper(StreamIndexer):
         key = (self.header.typ, self.header.sub)
         rectype = self.__rec_map.get(key, UnknownRecord(*key))
         self.types.append(rectype)
+
 
 class MaterialMapper(MaterialIndexer):
     indexable_types = set([V4.wir, V4.wrr, V4.pir, V4.prr, V4.ptr, V4.mpr, V4.ftr])
@@ -63,14 +65,15 @@ class MaterialMapper(MaterialIndexer):
             self.insertionid.append(None)
             self.partid.append(None)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     from pystdf.IO import Parser
     from pystdf.Writers import AtdfWriter
     import pystdf.V4
 
-    filename, = sys.argv[1:]
-    f = open(filename, 'rb')
-    p=Parser(inp=f)
+    (filename,) = sys.argv[1:]
+    f = open(filename, "rb")
+    p = Parser(inp=f)
     record_mapper = StreamMapper()
     p.addSink(record_mapper)
     p.parse()

@@ -39,7 +39,7 @@ def toExcel(fname,tables):
             v.to_excel(writer,sheet_name=k,columns=columns,index=False,na_rep="N/A")
     writer.save()
 
-if __name__=="__main__":
+def main():
     if len(sys.argv)==1:
         print("Usage: %s <stdf file>" % (sys.argv[0]))
     else:

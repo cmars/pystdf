@@ -24,11 +24,11 @@ PySTDF is released under a GPL license. Applications developed with PySTDF can o
 """
 authors = [{name = "Casey Marshall", email="casey.marshall@gmail.com"}]
 url="http://code.google.com/p/pystdf/"
-packages=["pystdf","pystdf.explorer"]
 dependencies = [
     'numpy',
     'pandas',
 ]
+packages=["pystdf", "pystdf.scripts"]
 classifiers=[
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -44,4 +44,8 @@ classifiers=[
 ]
 
 [project.scripts]
-stdf_slice = "scripts.stdf_slice:main"
+stdf_slice = "pystdf.scripts.stdf_slice:main"
+rec_index = "pystdf.scripts.rec_index:main"
+stdf2excel = "pystdf.scripts.stdf2excel:main"
+stdf2txt = "pystdf.scripts.stdf2txt:main"
+stdf2xml = "pystdf.scripts.stdf2xml:main"

@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pystdf"
+version = "1.3.3"
+long_description="""
+PySTDF is a Python module that makes it easy to work with STDF (Teradyne"s Standard Test Data Format). STDF is a commonly used file format in semiconductor test -- automated test equipment (ATE) from such vendors as Teradyne, Verigy, LTX, Credence, and others support this format.
+
+PySTDF provides event-based stream parsing of STDF version 4, along with indexers that can help you rearrange the data into a more useful tabular form, as well as generate missing summary records or new types of derivative records.
+
+The parser architecture is very flexible and can easily be extended to support STDF version 3 as well as custom record types.
+
+Potential applications of PySTDF include:
+* Debugging a vendor"s STDF implementation
+* Straight conversion to ASCII-readable form
+* Repairing STDF files
+* Developing an application that leverages STDF
+  - Conversion to tabular form for statistical analysis tools
+  - Loading data into a relational database
+
+PySTDF is released under a GPL license. Applications developed with PySTDF can only be released with a GPL-compatible license. Commercial applications can purchase an alternate license agreement for closed-source distribution.
+"""
+authors = [{name = "Casey Marshall", email="casey.marshall@gmail.com"}]
+url="http://code.google.com/p/pystdf/"
+dependencies = [
+    'numpy',
+    'pandas',
+    'openpyxl',
+]
+packages=["pystdf", "pystdf.scripts"]
+classifiers=[
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "License :: Free for non-commercial use",
+    "License :: OSI Approved :: GNU General Public License (GPL)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Intended Audience :: Manufacturing",
+    "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
+    "Topic :: Utilities",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Pre-processors",
+]
+
+[project.scripts]
+stdf_slice = "pystdf.scripts.stdf_slice:main"
+rec_index = "pystdf.scripts.rec_index:main"
+stdf2excel = "pystdf.scripts.stdf2excel:main"
+stdf2text = "pystdf.scripts.stdf2text:main"
+stdf2xml = "pystdf.scripts.stdf2xml:main"

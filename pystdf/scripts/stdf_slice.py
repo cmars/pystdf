@@ -22,7 +22,7 @@ from pystdf.IO import Parser
 from pystdf.Mapping import *
 from pystdf.Writers import *
 
-if __name__ == '__main__':
+def main():
     filename, start, count = sys.argv[1:4]
     start = int(start)
     count = int(count)

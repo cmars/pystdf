@@ -25,6 +25,10 @@ PySTDF is released under a GPL license. Applications developed with PySTDF can o
 authors = [{name = "Casey Marshall", email="casey.marshall@gmail.com"}]
 url="http://code.google.com/p/pystdf/"
 packages=["pystdf","pystdf.explorer"]
+dependencies = [
+    'numpy',
+    'pandas',
+]
 classifiers=[
     "Development Status :: 4 - Beta",
     "Environment :: Console",

@@ -27,6 +27,7 @@ url="http://code.google.com/p/pystdf/"
 dependencies = [
     'numpy',
     'pandas',
+    'openpyxl',
 ]
 packages=["pystdf", "pystdf.scripts"]
 classifiers=[
@@ -47,5 +48,5 @@ classifiers=[
 stdf_slice = "pystdf.scripts.stdf_slice:main"
 rec_index = "pystdf.scripts.rec_index:main"
 stdf2excel = "pystdf.scripts.stdf2excel:main"
-stdf2txt = "pystdf.scripts.stdf2txt:main"
+stdf2text = "pystdf.scripts.stdf2text:main"
 stdf2xml = "pystdf.scripts.stdf2xml:main"

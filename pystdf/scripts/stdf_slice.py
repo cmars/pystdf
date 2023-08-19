@@ -35,3 +35,7 @@ def main():
     p.addSink(AtdfWriter())
     f.seek(record_mapper.indexes[start])
     p.parse(count=count)
+
+if __name__ == '__main__':
+    main()
+

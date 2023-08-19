@@ -52,3 +52,7 @@ def main():
         dfs= STDF2DataFrame(fin)
         print("Exporting to %s" %fout)
         toExcel(fout,dfs)
+
+if __name__ == '__main__':
+    main()
+

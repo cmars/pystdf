@@ -69,3 +69,7 @@ def main():
         print("Usage: %s <stdf file>" % (sys.argv[0]))
     else:
         process_file(sys.argv[1])
+
+if __name__ == '__main__':
+    main()
+

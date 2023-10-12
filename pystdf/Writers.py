@@ -17,12 +17,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-import sys, os
+import sys
 from time import strftime, localtime
 from xml.sax.saxutils import quoteattr
 from pystdf import V4
-
-import pdb
 
 def format_by_type(value, field_type):
     if field_type in ('B1', 'N1'):

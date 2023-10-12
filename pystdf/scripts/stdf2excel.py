@@ -28,16 +28,15 @@ import pandas as pd
 def toExcel(fname,tables):
     """ Export the tables from toTables to Excel
     """
-    writer = pd.ExcelWriter(fname)
-    for k,v in tables.items():
-        # Make sure the order of columns complies the specs
-        record = [r for r in V4.records if r.__class__.__name__.upper()==k]
-        if len(record)==0:
-            print("Ignore exporting table %s: No such record type exists." %k)
-        else:
-            columns = [field[0] for field in record[0].fieldMap]
-            v.to_excel(writer,sheet_name=k,columns=columns,index=False,na_rep="N/A")
-    writer.save()
+    with pd.ExcelWriter(fname) as writer:
+        for k,v in tables.items():
+            # Make sure the order of columns complies the specs
+            record = [r for r in V4.records if r.__class__.__name__.upper()==k]
+            if len(record)==0:
+                print("Ignore exporting table %s: No such record type exists." %k)
+            else:
+                columns = [field[0] for field in record[0].fieldMap]
+                v.to_excel(writer,sheet_name=k,columns=columns,index=False,na_rep="N/A")
 
 def main():
     if len(sys.argv)==1:

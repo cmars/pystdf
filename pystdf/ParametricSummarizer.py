@@ -55,7 +55,7 @@ class ParametricSummarizer(EventSource):
 		values.append(row[ptr.RESULT])
 	
 	def onMpr(self, row):
-		for i in xrange(row[mpr.RSLT_CNT]):
+		for i in range(row[mpr.RSLT_CNT]):
 			values = self.rawMap.setdefault((row[ptr.SITE_NUM],row[ptr.TEST_NUM],i), [])
 			values.append(row[mpr.RTN_RSLT][i])
 	

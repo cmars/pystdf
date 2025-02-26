@@ -117,8 +117,7 @@ class Parser(DataSource):
 
   def readArray(self, header, indexValue, stdfFmt):
     if (stdfFmt == 'N1'):
-      self.readArray(header, indexValue/2+indexValue%2, 'U1')
-      return
+      return self.readArray(header, indexValue/2+indexValue%2, 'U1')
     arr = []
     for i in range(int(indexValue)):
       arr.append(self.unpackMap[stdfFmt](header, stdfFmt))

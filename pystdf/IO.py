@@ -27,18 +27,10 @@ from pystdf import V4
 
 from pystdf.Pipeline import DataSource
 
-def appendFieldParser(fn, action):
-  """Append a field parsing function to a record parsing function.
-  This is used to build record parsing functions based on the record type specification."""
-  def newRecordParser(*args):
-    fields = fn(*args)
-    try:
-      fields.append(action(*args))
-    except EndOfRecordException: pass
-    return fields
-  return newRecordParser
-
 class Parser(DataSource):
+  _k_field_pattern = re.compile('k(\d+)([A-Z][a-z0-9]+)')
+  _cached_field_parsers = {}
+
   def readAndUnpack(self, header, fmt):
     size = struct.calcsize(fmt)
     if (size > header.len):
@@ -193,17 +185,26 @@ class Parser(DataSource):
       raise
 
   def getFieldParser(self, fieldType):
-    if (fieldType.startswith("k")):
-      fieldIndex, arrayFmt = re.match('k(\d+)([A-Z][a-z0-9]+)', fieldType).groups()
-      return lambda self, header, fields: self.readArray(header, fields[int(fieldIndex)], arrayFmt)
-    else:
-      parseFn = self.unpackMap[fieldType]
-      return lambda self, header, fields: parseFn(header, fieldType)
+    if fieldType not in self._cached_field_parsers:
+      if (fieldType.startswith("k")):
+        fieldIndex, arrayFmt = self._k_field_pattern.match(fieldType).groups()
+        def parse_field(parser, header, fields):
+          return parser.readArray(header, fields[int(fieldIndex)], arrayFmt)
+      else:
+        parseFn = self.unpackMap[fieldType]
+        def parse_field(parser, header, fields):
+          return parseFn(header, fieldType)
+      self._cached_field_parsers[fieldType] = parse_field
+    return self._cached_field_parsers[fieldType]
 
   def createRecordParser(self, recType):
-    fn = lambda self, header, fields: fields
-    for stdfType in recType.fieldStdfTypes:
-      fn = appendFieldParser(fn, self.getFieldParser(stdfType))
+    field_parsers = tuple(self.getFieldParser(stdfType) for stdfType in recType.fieldStdfTypes)
+    def fn(parser, header, fields):
+      try:
+        for parse_field in field_parsers:
+          fields.append(parse_field(parser, header, fields))
+      except EndOfRecordException: pass
+      return fields
     return fn
 
   def __init__(self, recTypes=V4.records, inp=sys.stdin, reopen_fn=None, endian=None):

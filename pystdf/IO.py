@@ -29,7 +29,6 @@ from pystdf.Pipeline import DataSource
 
 class Parser(DataSource):
   _k_field_pattern = re.compile('k(\d+)([A-Z][a-z0-9]+)')
-  _cached_field_parsers = {}
 
   def readAndUnpack(self, header, fmt):
     size = struct.calcsize(fmt)
@@ -214,6 +213,7 @@ class Parser(DataSource):
     self.inp = inp
     self.reopen_fn = reopen_fn
     self.endian = endian
+    self._cached_field_parsers = {}
 
     self.recordMap = dict(
       [ ( (recType.typ, recType.sub), recType )

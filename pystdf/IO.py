@@ -28,7 +28,7 @@ from pystdf import V4
 from pystdf.Pipeline import DataSource
 
 class Parser(DataSource):
-  _k_field_pattern = re.compile('k(\d+)([A-Z][a-z0-9]+)')
+  _k_field_pattern = re.compile(r'k(\d+)([A-Z][a-z0-9]+)')
 
   def readAndUnpack(self, header, fmt):
     size = struct.calcsize(fmt)

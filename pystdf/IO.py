@@ -27,6 +27,13 @@ from pystdf import V4
 
 from pystdf.Pipeline import DataSource
 
+def memorize(func):
+  """Cache method results in instance's _field_parser_cache dict."""
+  def wrapper(self, fieldType):
+    cache = self.__dict__.setdefault('_field_parser_cache', {})
+    return cache.setdefault(fieldType, func(self, fieldType))
+  return wrapper
+
 class Parser(DataSource):
   _k_field_pattern = re.compile(r'k(\d+)([A-Z][a-z0-9]+)')
 
@@ -183,18 +190,19 @@ class Parser(DataSource):
       self.cancel(exception)
       raise
 
+  @memorize
   def getFieldParser(self, fieldType):
-    if fieldType not in self._cached_field_parsers:
-      if (fieldType.startswith("k")):
-        fieldIndex, arrayFmt = self._k_field_pattern.match(fieldType).groups()
-        def parse_field(parser, header, fields):
-          return parser.readArray(header, fields[int(fieldIndex)], arrayFmt)
-      else:
-        parseFn = self.unpackMap[fieldType]
-        def parse_field(parser, header, fields):
+    if (fieldType.startswith("k")):
+      fieldIndex, arrayFmt = self._k_field_pattern.match(fieldType).groups()
+      def parse_field(parser, header, fields):
+        return parser.readArray(header, fields[int(fieldIndex)], arrayFmt)
+    else:
+      parseFn = self.unpackMap.get(fieldType, None)
+      if parseFn is None:
+        raise ValueError("Unknown field type '%s'" % fieldType)
+      def parse_field(parser, header, fields):
           return parseFn(header, fieldType)
-      self._cached_field_parsers[fieldType] = parse_field
-    return self._cached_field_parsers[fieldType]
+    return parse_field
 
   def createRecordParser(self, recType):
     field_parsers = tuple(self.getFieldParser(stdfType) for stdfType in recType.fieldStdfTypes)
@@ -213,7 +221,6 @@ class Parser(DataSource):
     self.inp = inp
     self.reopen_fn = reopen_fn
     self.endian = endian
-    self._cached_field_parsers = {}
 
     self.recordMap = dict(
       [ ( (recType.typ, recType.sub), recType )

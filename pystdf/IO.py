@@ -197,9 +197,7 @@ class Parser(DataSource):
       def parse_field(parser, header, fields):
         return parser.readArray(header, fields[int(fieldIndex)], arrayFmt)
     else:
-      parseFn = self.unpackMap.get(fieldType, None)
-      if parseFn is None:
-        raise ValueError("Unknown field type '%s'" % fieldType)
+      parseFn = self.unpackMap[fieldType]
       def parse_field(parser, header, fields):
           return parseFn(header, fieldType)
     return parse_field

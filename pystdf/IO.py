@@ -21,7 +21,6 @@ import sys
 
 import struct
 import re
-import itertools
 
 from pystdf.Types import *
 from pystdf import V4
@@ -44,6 +43,7 @@ def groupConsecutiveDuplicates(fieldsList):
     >>> groupConsecutiveDuplicates([])
     []
   """
+  import itertools
   return (
       [(key, len(list(group))) for key, group in itertools.groupby(fieldsList)]
       if fieldsList
@@ -88,19 +88,24 @@ class Parser(DataSource):
   def batchReadFields(self, header, stdfFmt, count):
     fmt = packFormatMap[stdfFmt]
     size = struct.calcsize(fmt)
-    total_size = size * count
-    if (total_size > header.len):
-      self.inp.read(header.len)
+    totalSize = size * count
+    if (totalSize > header.len):
+      fullCount = header.len // size
+      if not fullCount:
+        header.len = 0
+        return (None,) * count
+      tmpResult = list(self.batchReadFields(header, stdfFmt, fullCount))
       header.len = 0
-      raise EndOfRecordException()
-    buf = self.inp.read(total_size)
+      tmpResult.extend([None] * (count - fullCount))
+      return tuple(tmpResult)
+    buf = self.inp.read(totalSize)
     if len(buf) == 0:
       self.eof = 1
       raise EofException()
-    header.len -= total_size
+    header.len -= totalSize
     vals = struct.unpack(self.endian + fmt * count, buf)
     if isinstance(vals[0],bytes):
-      return tuple(map(lambda val: val.decode("ascii"), vals))
+      return tuple(val.decode("ascii") for val in vals)
     else:
       return vals
 
@@ -231,27 +236,30 @@ class Parser(DataSource):
       fieldIndex, arrayFmt = self._kFieldPattern.match(fieldType).groups()
       def parseDynamicArray(parser, header, fields):
         return parser.readArray(header, fields[int(fieldIndex)], arrayFmt)
-      return parseDynamicArray
+      return parseDynamicArray, count
     if fieldType in self._unpackMap:
       def parseBatchedFields(parser, header, fields):
-          return parser.batchReadFields(header, fieldType, count)
-      return parseBatchedFields
+        result = parser.batchReadFields(header, fieldType, count)
+        return result
+      return parseBatchedFields, 1
     parseFn = self.unpackMap[fieldType]
     def parseIndividualFields(parser, header, fields):
-        return [parseFn(header, fieldType) for _ in range(count)]
-    return parseIndividualFields
+      return parseFn(header, fieldType)
+    return parseIndividualFields, count
 
   def createRecordParser(self, recType):
-    grouped_fields = groupConsecutiveDuplicates(recType.fieldStdfTypes)
-    field_parsers = tuple(
-        self.getFieldParser(stdfType, count)
-        for stdfType, count in grouped_fields
-    )
+    fieldParsers = []
+    groupedFields = groupConsecutiveDuplicates(recType.fieldStdfTypes)
+    for (stdfType, count) in groupedFields:
+      func, times = self.getFieldParser(stdfType, count)
+      for _ in range(times):
+        fieldParsers.append(func)
+
     def fn(parser, header, fields):
       try:
-        for parse_field in field_parsers:
-          result = parse_field(parser, header, fields)
-          if isinstance(result, (list, tuple)):
+        for parseField in fieldParsers:
+          result = parseField(parser, header, fields)
+          if isinstance(result, tuple):
             fields.extend(result)
           else:
             fields.append(result)

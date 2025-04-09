@@ -21,6 +21,7 @@ import sys
 
 import struct
 import re
+import itertools
 
 from pystdf.Types import *
 from pystdf import V4
@@ -29,13 +30,28 @@ from pystdf.Pipeline import DataSource
 
 def memorize(func):
   """Cache method results in instance's _field_parser_cache dict."""
-  def wrapper(self, fieldType):
+  def wrapper(self, fieldType, count):
     cache = self.__dict__.setdefault('_field_parser_cache', {})
-    return cache.setdefault(fieldType, func(self, fieldType))
+    return cache.setdefault((fieldType, count), func(self, fieldType, count))
   return wrapper
 
+def groupConsecutiveDuplicates(fieldsList):
+  """Groups consecutive identical field types and returns them with their counts.
+
+  Examples:
+    >>> groupConsecutiveDuplicates(['U4', 'U4', 'U1', 'C1', 'C1', 'C1'])
+    [('U4', 2), ('U1', 1), ('C1', 3)]
+    >>> groupConsecutiveDuplicates([])
+    []
+  """
+  return (
+      [(key, len(list(group))) for key, group in itertools.groupby(fieldsList)]
+      if fieldsList
+      else []
+  )
+
 class Parser(DataSource):
-  _k_field_pattern = re.compile(r'k(\d+)([A-Z][a-z0-9]+)')
+  _kFieldPattern = re.compile(r'k(\d+)([A-Z][a-z0-9]+)')
 
   def readAndUnpack(self, header, fmt):
     size = struct.calcsize(fmt)
@@ -68,6 +84,25 @@ class Parser(DataSource):
 
   def readFieldDirect(self, stdfFmt):
     return self.readAndUnpackDirect(packFormatMap[stdfFmt])
+
+  def batchReadFields(self, header, stdfFmt, count):
+    fmt = packFormatMap[stdfFmt]
+    size = struct.calcsize(fmt)
+    total_size = size * count
+    if (total_size > header.len):
+      self.inp.read(header.len)
+      header.len = 0
+      raise EndOfRecordException()
+    buf = self.inp.read(total_size)
+    if len(buf) == 0:
+      self.eof = 1
+      raise EofException()
+    header.len -= total_size
+    vals = struct.unpack(self.endian + fmt * count, buf)
+    if isinstance(vals[0],bytes):
+      return tuple(map(lambda val: val.decode("ascii"), vals))
+    else:
+      return vals
 
   def readCn(self, header):
     if header.len == 0:
@@ -191,23 +226,35 @@ class Parser(DataSource):
       raise
 
   @memorize
-  def getFieldParser(self, fieldType):
+  def getFieldParser(self, fieldType, count):
     if (fieldType.startswith("k")):
-      fieldIndex, arrayFmt = self._k_field_pattern.match(fieldType).groups()
-      def parse_field(parser, header, fields):
+      fieldIndex, arrayFmt = self._kFieldPattern.match(fieldType).groups()
+      def parseDynamicArray(parser, header, fields):
         return parser.readArray(header, fields[int(fieldIndex)], arrayFmt)
-    else:
-      parseFn = self.unpackMap[fieldType]
-      def parse_field(parser, header, fields):
-          return parseFn(header, fieldType)
-    return parse_field
+      return parseDynamicArray
+    if fieldType in self._unpackMap:
+      def parseBatchedFields(parser, header, fields):
+          return parser.batchReadFields(header, fieldType, count)
+      return parseBatchedFields
+    parseFn = self.unpackMap[fieldType]
+    def parseIndividualFields(parser, header, fields):
+        return [parseFn(header, fieldType) for _ in range(count)]
+    return parseIndividualFields
 
   def createRecordParser(self, recType):
-    field_parsers = tuple(self.getFieldParser(stdfType) for stdfType in recType.fieldStdfTypes)
+    grouped_fields = groupConsecutiveDuplicates(recType.fieldStdfTypes)
+    field_parsers = tuple(
+        self.getFieldParser(stdfType, count)
+        for stdfType, count in grouped_fields
+    )
     def fn(parser, header, fields):
       try:
         for parse_field in field_parsers:
-          fields.append(parse_field(parser, header, fields))
+          result = parse_field(parser, header, fields)
+          if isinstance(result, (list, tuple)):
+            fields.extend(result)
+          else:
+            fields.append(result)
       except EndOfRecordException: pass
       return fields
     return fn
@@ -224,23 +271,19 @@ class Parser(DataSource):
       [ ( (recType.typ, recType.sub), recType )
         for recType in recTypes ])
 
+    self._unpackMap = {
+      ftype: self.readField 
+      for ftype in ("C1", "B1", "U1", "U2", "U4", "U8", 
+                  "I1", "I2", "I4", "I8", "R4", "R8")
+    }
     self.unpackMap = {
-      "C1": self.readField,
-      "B1": self.readField,
-      "U1": self.readField,
-      "U2": self.readField,
-      "U4": self.readField,
-      "U8": self.readField,
-      "I1": self.readField,
-      "I2": self.readField,
-      "I4": self.readField,
-      "I8": self.readField,
-      "R4": self.readField,
-      "R8": self.readField,
-      "Cn": lambda header, fmt: self.readCn(header),
-      "Bn": lambda header, fmt: self.readBn(header),
-      "Dn": lambda header, fmt: self.readDn(header),
-      "Vn": lambda header, fmt: self.readVn(header)
+      **self._unpackMap,
+      **{
+        "Cn": lambda header, _: self.readCn(header),
+        "Bn": lambda header, _: self.readBn(header),
+        "Dn": lambda header, _: self.readDn(header),
+        "Vn": lambda header, _: self.readVn(header)
+      }
     }
 
     self.recordParsers = dict(

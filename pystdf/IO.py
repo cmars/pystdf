@@ -63,6 +63,9 @@ class Parser(DataSource):
     if len(buf) == 0:
       self.eof = 1
       raise EofException()
+    if len(buf) < size:
+      header.len = 0
+      raise EndOfRecordException()
     header.len -= len(buf)
     val,=struct.unpack(self.endian + fmt, buf)
     if isinstance(val,bytes):

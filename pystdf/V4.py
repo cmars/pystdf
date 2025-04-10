@@ -208,6 +208,19 @@ class Atr(RecordType, metaclass=StdfRecordMeta):
     ('CMD_LINE', 'Cn')
   )
 
+class Vur(RecordType, metaclass=StdfRecordMeta):
+  '''
+  Version Update Record (VUR)
+  '''
+  typ = 0
+  sub = 30
+  fieldMap = (
+    ('UPD_CNT', 'U1'),
+    ('UPD_NAM', 'k0Cn'),
+    # VUR_DUMMY is to compatible with the STDF from UF Plus, Jeremy
+    # ('VUR_DUMMY', 'U1')
+  )
+
 class Mir(RecordType, metaclass=StdfRecordMeta):
   """
   **Master Information Record (MIR)**
@@ -1947,6 +1960,42 @@ class Mpr(RecordType, metaclass=StdfRecordMeta):
     ('HI_SPEC','R4')
   )
 
+class Psr(RecordType, metaclass=StdfRecordMeta):
+  '''
+  Pattern Sequence Record (PSR)
+  '''
+  typ = 1
+  sub = 90
+  fieldMap = (
+    ('CONT_FLG','B1'),
+    ('PSR_INDX','U2'),
+    ('PSR_NAM','Cn'),
+    ('OPT_FLG','B1'),
+    ('TOTP_CNT','U2'),
+    ('LOCP_CNT','U2'),
+    ('PAT_BGN','k5U8'),
+    ('PAT_END','k5U8'),
+    ('PAT_FILE','k5Cn'),
+    ('PAT_LBL','k5Cn'),
+    ('FILE_UID','k5Cn'),
+    ('ATPG_DSC','k5Cn'),
+    ('SRC_ID','k5Cn')
+  )
+
+class Nmr(RecordType, metaclass=StdfRecordMeta):
+  '''
+  Name Map Record (NMR)
+  '''
+  typ = 1
+  sub = 91
+  fieldMap = (
+    ('CONT_FLG','B1'),
+    ('TOTM_CNT','U2'),
+    ('LOCM_CNT','U2'),
+    ('PMR_INDX','k2U2'),
+    ('ATPG_NAM','k2Cn')
+  )
+
 class Ftr(RecordType, metaclass=StdfRecordMeta):
   """
   **Functional Test Record (FTR)**
@@ -2228,6 +2277,76 @@ class Ftr(RecordType, metaclass=StdfRecordMeta):
     ('SPIN_MAP','Dn')
   )
 
+class Str(RecordType, metaclass=StdfRecordMeta):
+  '''
+  Scan Test Record(STR)
+  '''
+  typ = 15
+  sub = 30
+  fieldMap = (
+    ('CONT_FLG','B1'),
+    ('TEST_NUM','U4'),
+    ('HEAD_NUM','U1'),
+    ('SITE_NUM','U1'),
+    ('PSR_REF','U2'),
+    ('TEST_FLG','B1'),
+    ('LOG_TYP','Cn'),
+    ('TEST_TXT','Cn'),
+    ('ALARM_ID','Cn'),
+    ('PROG_TXT','Cn'),
+    ('RSLT_TXT','Cn'),
+    ('Z_VAL','U1'),
+    ('FMU_FLG','B1'),
+    ('MASK_MAP','Dn'),
+    ('FAL_MAP','Dn'),
+    ('CYC_CNT','U8'),
+    ('TOTF_CNT','U4'),
+    ('TOTL_CNT','U4'),
+    ('CYC_BASE','U8'),
+    ('BIT_BASE','U4'),
+    ('COND_CNT','U2'),
+    ('LIM_CNT','U2'),
+    ('CYC_SIZE','U1'),
+    ('PMR_SIZE','U1'),
+    ('CHN_SIZE','U1'),
+    ('PAT_SIZE','U1'),
+    ('BIT_SIZE','U1'),
+    ('U1_SIZE','U1'),
+    ('U2_SIZE','U1'),
+    ('U3_SIZE','U1'),
+    ('UTX_SIZE','U1'),
+    ('CAP_BGN','U2'),
+    ('LIM_INDX','k21U2'),
+    ('LIM_SPEC','k21U4'),
+    ('COND_LST','k20Cn'),
+    ('CYCO_CNT','U2'),
+    # ('CYC_OFST', 'k35U4'),
+    ('CYC_OFST','k35U8'),
+    ('PMR_CNT','U2'),
+    ('PMR_INDX','k37U2'),
+    ('CHN_CNT','U2'),
+    ('CHN_NUM','k39U1'),
+    ('EXP_CNT','U2'),
+    ('EXP_DATA','k41U1'),
+    ('CAP_CNT','U2'),
+    ('CAP_DATA','k43U1'),
+    ('NEW_CNT','U2'),
+    ('NEW_DATA','k45U1'),
+    # I do not know the U*f, use U1 instead, Jeremy
+    ('PAT_CNT','U2'),
+    ('PAT_NUM','k47U4'),
+    ('BPOS_CNT','U2'),
+    ('BIT_POS','k49U4'),
+    ('USR1_CNT','U2'),
+    ('USR1','k51U8'),
+    ('USR2_CNT','U2'),
+    ('USR2','k53U8'),
+    ('USR3_CNT','U2'),
+    ('USR3','k55U8'),
+    ('TXT_CNT','U2'),
+    ('USER_TXT','k57U1')
+  )
+
 class Bps(RecordType, metaclass=StdfRecordMeta):
   """
   **Begin Program Section Record (BPS)**
@@ -2456,6 +2575,7 @@ class Dtr(RecordType, metaclass=StdfRecordMeta):
 
 far = Far()
 atr = Atr()
+vur = Vur()
 mir = Mir()
 mrr = Mrr()
 pcr = Pcr()
@@ -2474,7 +2594,10 @@ prr = Prr()
 tsr = Tsr()
 ptr = Ptr()
 mpr = Mpr()
+psr = Psr()
+nmr = Nmr()
 ftr = Ftr()
+str = Str()
 bps = Bps()
 eps = Eps()
 gdr = Gdr()
@@ -2483,6 +2606,7 @@ dtr = Dtr()
 records = (
   far,
   atr,
+  vur,
   mir,
   mrr,
   pcr,
@@ -2501,7 +2625,10 @@ records = (
   tsr,
   ptr,
   mpr,
+  psr,
+  nmr,
   ftr,
+  str,
   bps,
   eps,
   gdr,

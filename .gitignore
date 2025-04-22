@@ -1,7 +1,0 @@
-*.pyc
-*.swp
-*.swo
-/build/
-/docs/build
-/.venv
-/dist

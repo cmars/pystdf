@@ -33,7 +33,7 @@ dev: pi-sandbox
         pi-sandbox
 
 # Launch pi in a podman container isolated from the host
-pi: pi-image
+pi: pi-sandbox
     podman run --rm -it \
         -e LMSTUDIO_API_KEY=$(gopass show auth/lm-studio/dev) \
         -v ${PWD}:/workspace:z \

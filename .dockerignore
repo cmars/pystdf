@@ -1,0 +1,21 @@
+# VCS / local interpreter state
+.git
+.venv
+
+# Local agent / CI state
+.pi
+
+# Python build/test artifacts
+__pycache__
+*.pyc
+.pytest_cache
+dist
+
+# Test fixtures / data files (not part of the installed package)
+data
+*.stdf
+
+# This repo's dev tooling — not needed at runtime
+Justfile
+default.nix
+docs

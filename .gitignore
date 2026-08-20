@@ -1,7 +1,10 @@
 *.pyc
+__pycache__/
+.pytest_cache/
 *.swp
 *.swo
 /build/
 /docs/build
 /.venv
 /dist
+/.pi

@@ -62,7 +62,7 @@ class BinSummarizer(EventSource):
     return self.summaryHbrs.values()
   
   def getSiteSynthHbins(self):
-    for siteBin, info in self.hbinParts.iteritems():
+    for siteBin, info in self.hbinParts.items():
       site, bin = siteBin
       partCount, isPass = info
       if isPass[0]:
@@ -79,7 +79,7 @@ class BinSummarizer(EventSource):
     return self.summarySbrs.values()
   
   def getSiteSynthSbins(self):
-    for siteBin, info in self.sbinParts.iteritems():
+    for siteBin, info in self.sbinParts.items():
       site, bin = siteBin
       partCount, isPass = info
       if isPass[0]:
